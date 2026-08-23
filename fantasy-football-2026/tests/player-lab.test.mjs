@@ -86,3 +86,40 @@ test("keeps ids, aria references, and inline JavaScript valid", () => {
   assert.ok(scripts.length >= 3);
   for (const source of scripts) assert.doesNotThrow(() => new Function(source));
 });
+
+test("ships a consolidated 32-team depth one-pager", () => {
+  assert.match(html, /aria-controls="p-lab-onepager"/);
+  assert.match(html, /id="onepager-grid"/);
+  assert.match(html, /function renderOnePager/);
+  assert.match(html, /var ONEPAGER_SLOTS/);
+  // fantasy-starter slots must cover QB1, RB1-2, WR1-3 and TE1
+  assert.match(html, /starters: \[\['QB',1\],\['RB',2\],\['WR',3\],\['TE',1\]\]/);
+  assert.match(html, /id="onepager-print"/);
+  assert.match(html, /@media print/);
+  // every team in the projection feed can be rendered
+  const teamsWithSkill = new Set(
+    projections.players
+      .filter((p) => ["QB", "RB", "WR", "TE"].includes(p.position) && p.team && p.team !== "FA")
+      .map((p) => p.team),
+  );
+  assert.equal(teamsWithSkill.size, 32, "expected all 32 teams to have skill players");
+});
+
+test("makes injury snapshot age visible and never fakes a refresh", () => {
+  assert.match(html, /id="injury-freshness"/);
+  assert.match(html, /function renderInjuryFreshness/);
+  assert.match(html, /id="injury-refresh"/);
+  assert.match(html, /Live refresh FAILED/);
+  assert.match(html, /Nothing was changed/);
+  // a failed refresh must not claim success
+  assert.doesNotMatch(html, /refresh complete/i);
+  assert.match(html, /function applyLiveInjuries/);
+});
+
+test("keeps the draft queue ordered and persistent", () => {
+  assert.match(html, /data-move-queue="up"/);
+  assert.match(html, /data-move-queue="down"/);
+  assert.match(html, /class="queue-rank"/);
+  assert.match(html, /next-up/);
+  assert.match(html, /queueKeys\.splice\(to, 0, queueKeys\.splice\(from, 1\)\[0\]\)/);
+});

@@ -603,6 +603,11 @@
   .draft-queue{ display:flex; gap:5px; overflow:auto; padding:1px; }
   .queue-chip{ display:flex; align-items:center; gap:5px; flex:none; border:1px solid rgba(96,165,250,.25); border-radius:999px; padding:3px 4px 3px 8px; background:rgba(96,165,250,.07); color:var(--bone); font-size:.66rem; }
   .queue-chip small{ color:var(--dim); }
+  .queue-rank{ display:grid; place-items:center; min-width:16px; height:16px; border-radius:5px; background:rgba(96,165,250,.22); color:#bfdbfe; font:800 .58rem var(--data); padding:0 3px; }
+  .queue-chip.next-up{ border-color:var(--lime); background:rgba(163,230,53,.12); }
+  .queue-chip.next-up .queue-rank{ background:var(--lime); color:#0b0f0c; }
+  .queue-move{ font-size:.55rem; line-height:1; }
+  .queue-chip button[disabled]{ opacity:.3; cursor:default; }
   .queue-chip button{ display:grid; place-items:center; width:21px; height:21px; padding:0; }
   .draft-room-reset{ white-space:nowrap; color:var(--dim); }
   .freshness-bar{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
@@ -696,6 +701,66 @@
   .depth-pos-card h3{ display:flex; justify-content:space-between; gap:10px; margin:0 0 12px; color:var(--bone); font-size:1rem; }
   .depth-pos-card h3 span{ color:var(--lime); font-family:var(--data); font-size:8px; letter-spacing:.1em; text-transform:uppercase; }
   .depth-player{ display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; border-top:1px solid var(--rule); padding:11px 0; }
+
+  /* ================= Consolidated depth one-pager ================= */
+  .onepager-toolbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+  .onepager-toolbar .lab-control{ flex:1 1 170px; min-width:0; }
+  .onepager-print{ border:1px solid var(--rule-2); border-radius:999px; background:transparent; color:var(--bone); padding:9px 15px; font:700 .68rem var(--ui); cursor:pointer; flex:none; }
+  .onepager-print:hover{ border-color:var(--lime); color:var(--lime); }
+  .onepager-legend{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px; font:600 .64rem var(--ui); color:var(--dim); }
+  .onepager-legend b{ color:var(--lime); font-family:var(--data); letter-spacing:.08em; }
+  .onepager-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  .op-team{ border:1px solid var(--rule-2); border-radius:14px; background:rgba(255,255,255,.035); padding:12px 12px 9px; break-inside:avoid; }
+  .op-team-head{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; border-bottom:1px solid var(--rule); padding-bottom:7px; margin-bottom:7px; }
+  .op-team-head h3{ margin:0; color:var(--bone); font:800 .95rem var(--ui); letter-spacing:.02em; }
+  .op-team-head span{ color:var(--dim); font-family:var(--data); font-size:8px; letter-spacing:.1em; text-transform:uppercase; }
+  .op-slot{ display:grid; grid-template-columns:38px 1fr auto; gap:7px; align-items:center; padding:3px 0; font-size:.72rem; }
+  .op-slot + .op-slot{ border-top:1px solid rgba(255,255,255,.05); }
+  .op-tag{ font:800 .6rem var(--data); letter-spacing:.06em; color:#0b0f0c; background:var(--lime); border-radius:5px; padding:2px 0; text-align:center; }
+  .op-tag.op-rb{ background:#7dd3fc; } .op-tag.op-wr{ background:#c4b5fd; }
+  .op-tag.op-te{ background:#fca5a5; } .op-tag.op-qb{ background:#fcd34d; }
+  .op-tag.op-dim{ background:rgba(255,255,255,.14); color:var(--dim); }
+  .op-name{ color:var(--bone); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .op-name small{ color:var(--dim); font-size:.62rem; margin-left:4px; }
+  .op-pts{ color:var(--dim); font-family:var(--data); font-size:.66rem; text-align:right; }
+  .op-inj{ display:inline-block; width:6px; height:6px; border-radius:50%; margin-left:5px; vertical-align:middle; }
+  .op-inj.q{ background:#fbbf24; } .op-inj.out{ background:#f87171; }
+  .op-empty{ color:var(--dim); font-style:italic; font-size:.7rem; padding:3px 0; }
+
+  /* ================= Injury freshness banner ================= */
+  .injury-freshness{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+    border:1px solid var(--rule-2); border-left-width:4px; border-radius:14px; padding:13px 16px; margin-bottom:14px; background:rgba(255,255,255,.035); }
+  .injury-freshness.fresh{ border-left-color:#4ade80; }
+  .injury-freshness.aging{ border-left-color:#fbbf24; }
+  .injury-freshness.stale{ border-left-color:#f87171; }
+  .injury-freshness .fresh-copy{ flex:1 1 340px; min-width:0; }
+  .injury-freshness strong{ display:block; color:var(--bone); font:800 .82rem var(--ui); margin-bottom:3px; }
+  .injury-freshness p{ margin:0; color:var(--dim); font-size:.72rem; line-height:1.5; }
+  .injury-freshness .fresh-age{ font-family:var(--data); letter-spacing:.06em; text-transform:uppercase; font-size:.66rem; }
+  .injury-freshness.fresh .fresh-age{ color:#4ade80; }
+  .injury-freshness.aging .fresh-age{ color:#fbbf24; }
+  .injury-freshness.stale .fresh-age{ color:#f87171; }
+  .fresh-actions{ display:flex; flex-wrap:wrap; gap:7px; flex:none; }
+  .fresh-btn{ border:1px solid var(--rule-2); border-radius:999px; background:transparent; color:var(--bone);
+    padding:7px 13px; font:700 .66rem var(--ui); cursor:pointer; text-decoration:none; display:inline-block; }
+  .fresh-btn:hover{ border-color:var(--lime); color:var(--lime); }
+  .fresh-btn[disabled]{ opacity:.55; cursor:progress; }
+  .fresh-result{ flex:1 1 100%; margin:0; font-size:.72rem; line-height:1.5; }
+  .fresh-result.ok{ color:#4ade80; } .fresh-result.err{ color:#f87171; }
+  @media (max-width:1100px){ .onepager-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  @media (max-width:860px){ .onepager-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:560px){ .onepager-grid{ grid-template-columns:1fr; } }
+  @media print{
+    body *{ visibility:hidden !important; }
+    #p-lab-onepager, #p-lab-onepager *{ visibility:visible !important; }
+    #p-lab-onepager{ position:absolute; inset:0 auto auto 0; width:100%; }
+    .onepager-toolbar,.onepager-print{ display:none !important; }
+    .onepager-grid{ grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+    .op-team{ border:1px solid #999; background:#fff; padding:5px; }
+    .op-team-head h3,.op-name{ color:#000; }
+    .op-pts,.op-name small,.op-team-head span{ color:#444; }
+    .op-tag{ background:#ddd !important; color:#000; }
+  }
   .depth-player:first-of-type{ border-top:0; }
   .depth-order{ display:grid; place-items:center; width:29px; height:29px; border:1px solid var(--rule-2); border-radius:9px; color:var(--lime); font-family:var(--data); font-size:9px; }
   .depth-player strong{ display:block; color:var(--bone); font-size:.8rem; }
@@ -1988,6 +2053,7 @@
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-league">My League</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-injuries">Injury Report</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-depth">Depth Charts</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-onepager">Depth One-Pager</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-watch">Who to Watch</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-tips">Draft Tips</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-lab-teams">Team Intel</button>
@@ -2042,6 +2108,19 @@
       <div class="provenance"><strong>Private league snapshot:</strong> imported from the signed-in ESPN archive for league 1634171350. Final standings show playoff finish, not regular-season seeding. Rosters are ESPN’s archived end-of-season lineups—not the original draft results. Missing ESPN archive fields stay blank instead of being estimated.</div>
     </div>
     <div class="panel" id="p-lab-injuries" role="tabpanel">
+      <div class="injury-freshness" id="injury-freshness">
+        <div class="fresh-copy">
+          <strong>Injury snapshot age <span class="fresh-age" id="injury-age">checking…</span></strong>
+          <p id="injury-freshness-note">This page ships a static snapshot on purpose so it never depends on a live API mid-draft. Re-check anyone you are about to draft against an official source below.</p>
+        </div>
+        <div class="fresh-actions">
+          <button class="fresh-btn" id="injury-refresh" type="button">Try live refresh</button>
+          <a class="fresh-btn" href="https://www.fantasypros.com/nfl/injury-news.php" target="_blank" rel="noopener">FantasyPros</a>
+          <a class="fresh-btn" href="https://www.espn.com/nfl/injuries" target="_blank" rel="noopener">ESPN</a>
+          <a class="fresh-btn" href="https://sleeper.com/players/nfl/trending" target="_blank" rel="noopener">Sleeper</a>
+        </div>
+        <p class="fresh-result" id="injury-refresh-result" aria-live="polite"></p>
+      </div>
       <div class="injury-overview">
         <div class="injury-stat"><strong id="injury-total">—</strong><span>Flagged players</span></div>
         <div class="injury-stat"><strong id="injury-ranked">—</strong><span>On ranked board</span></div>
@@ -2063,6 +2142,31 @@
       <div class="depth-overview" id="depth-overview"></div>
       <div class="depth-team-grid" id="depth-team-grid"><div class="lab-empty">Loading all 32 team depth charts…</div></div>
       <div class="provenance"><strong>Depth-chart research:</strong> order is sourced from the current Sleeper NFL player directory and paired with Sleeper/Rotowire projections. Use <a href="https://g.espncdn.com/s/ffldraftkit/26/NFL26_CS_Depth.pdf?adddata=2026CS_Depth" target="_blank" rel="noopener">ESPN’s 2026 fantasy depth chart</a> and <a href="https://www.fantasypros.com/nfl/depth-charts.php" target="_blank" rel="noopener">FantasyPros’ 32-team depth charts</a> as draft-day cross-checks because preseason roles can change quickly.</div>
+    </div>
+    <div class="panel" id="p-lab-onepager" role="tabpanel">
+      <div class="onepager-toolbar">
+        <input class="lab-control" id="onepager-search" type="search" placeholder="Search team or player…" aria-label="Search the consolidated depth one-pager">
+        <select class="lab-control" id="onepager-depth" aria-label="Choose how much depth to show">
+          <option value="starters">Fantasy starters (QB1 · RB1-2 · WR1-3 · TE1)</option>
+          <option value="two">Top two per position</option>
+          <option value="full">Full depth (top four)</option>
+        </select>
+        <select class="lab-control" id="onepager-position" aria-label="Limit the one-pager to one position">
+          <option value="">All positions</option><option>QB</option><option>RB</option><option>WR</option><option>TE</option>
+        </select>
+        <select class="lab-control" id="onepager-sort" aria-label="Sort teams">
+          <option value="team">Sort by team</option>
+          <option value="points">Sort by projected skill points</option>
+        </select>
+        <button class="onepager-print" id="onepager-print" type="button">Print / PDF</button>
+      </div>
+      <div class="onepager-legend">
+        <span><b>QB1</b> starter</span><span><b>RB1</b> lead back</span><span><b>WR1</b> alpha</span><span><b>TE1</b> starter</span>
+        <span><i class="op-inj q"></i> Questionable</span><span><i class="op-inj out"></i> PUP / IR / Out</span>
+        <span id="onepager-count"></span>
+      </div>
+      <div class="onepager-grid" id="onepager-grid"><div class="lab-empty">Loading all 32 team depth charts…</div></div>
+      <div class="provenance"><strong>One-pager method:</strong> slot order is Sleeper&rsquo;s reported depth-chart order, falling back to projected PPR where the feed leaves a team unordered. WR alignment (LWR/RWR/SWR) is shown where the feed supplies it, so a slot receiver reading WR1 is an alignment label, not a target-share guarantee. Injury dots reflect the same snapshot as the Injury Report tab &mdash; check its freshness banner before trusting a dot on draft day.</div>
     </div>
     <div class="panel" id="p-lab-watch" role="tabpanel">
       <div class="watch-grid" id="lab-watch"><div class="lab-empty">Loading watch list…</div></div>
@@ -2222,6 +2326,7 @@
     var teamReports = [];
     var injuries = [];
     var injuryFeedUpdated = '';
+    var allProjections = [];
     var depthPlayers = [];
     var draftedKeys = [];
     var queueKeys = [];
@@ -2354,8 +2459,16 @@
       document.getElementById('available-count').textContent = board.length - draftedKeys.length;
       document.getElementById('queue-count').textContent = queuedRows.length;
       document.getElementById('drafted-count').textContent = draftedKeys.length;
-      document.getElementById('draft-queue').innerHTML = queuedRows.length ? queuedRows.map(function(row){
-        return '<span class="queue-chip"><span>' + esc(row.name) + ' <small>' + esc(positionText(row)) + '</small></span><button type="button" data-remove-queue="' + esc(playerKey(row)) + '" aria-label="Remove ' + esc(row.name) + ' from queue">×</button></span>';
+      document.getElementById('draft-queue').innerHTML = queuedRows.length ? queuedRows.map(function(row, index){
+        var key = playerKey(row);
+        var first = index === 0, last = index === queuedRows.length - 1;
+        return '<span class="queue-chip' + (first ? ' next-up' : '') + '">' +
+          '<span class="queue-rank">' + (index + 1) + '</span>' +
+          '<span>' + esc(row.name) + ' <small>' + esc(positionText(row)) + '</small></span>' +
+          '<button type="button" class="queue-move" data-move-queue="up" data-player-key="' + esc(key) + '" aria-label="Move ' + esc(row.name) + ' up the queue"' + (first ? ' disabled' : '') + '>&#9664;</button>' +
+          '<button type="button" class="queue-move" data-move-queue="down" data-player-key="' + esc(key) + '" aria-label="Move ' + esc(row.name) + ' down the queue"' + (last ? ' disabled' : '') + '>&#9654;</button>' +
+          '<button type="button" data-remove-queue="' + esc(key) + '" aria-label="Remove ' + esc(row.name) + ' from queue">×</button>' +
+        '</span>';
       }).join('') : '<span class="queue-chip">Queue is empty</span>';
       saveDraftState();
     }
@@ -2530,6 +2643,161 @@
       }).join('');
     }
 
+    var ONEPAGER_SLOTS = {
+      starters: [['QB',1],['RB',2],['WR',3],['TE',1]],
+      two: [['QB',2],['RB',2],['WR',2],['TE',2]],
+      full: [['QB',4],['RB',4],['WR',4],['TE',4]]
+    };
+    function injuryDot(status){
+      if (!status) return '';
+      var severe = ['PUP','IR','DNR','NA','Out','Doubtful'].indexOf(status) !== -1;
+      return '<i class="op-inj ' + (severe ? 'out' : 'q') + '" title="' + esc(status) + '"></i>';
+    }
+    function onePagerOrdered(rows){
+      return rows.slice().sort(function(a,b){
+        var aOrder = Number(a.display_depth_order || a.depth_chart_order || 99);
+        var bOrder = Number(b.display_depth_order || b.depth_chart_order || 99);
+        return aOrder - bOrder || Number(b.stats && b.stats.pts_ppr || 0) - Number(a.stats && a.stats.pts_ppr || 0);
+      });
+    }
+    function renderOnePager(){
+      var grid = document.getElementById('onepager-grid');
+      if (!grid) return;
+      var query = norm(document.getElementById('onepager-search').value);
+      var mode = document.getElementById('onepager-depth').value;
+      var only = document.getElementById('onepager-position').value;
+      var sortBy = document.getElementById('onepager-sort').value;
+      var slots = (ONEPAGER_SLOTS[mode] || ONEPAGER_SLOTS.starters).filter(function(slot){
+        return !only || slot[0] === only;
+      });
+
+      var byTeam = {};
+      depthPlayers.forEach(function(player){
+        if (!player.team) return;
+        (byTeam[player.team] || (byTeam[player.team] = [])).push(player);
+      });
+
+      var cards = Object.keys(byTeam).map(function(team){
+        var picks = [];
+        slots.forEach(function(slot){
+          var pos = slot[0], count = slot[1];
+          var rows = onePagerOrdered(byTeam[team].filter(function(player){ return player.position === pos; }));
+          for (var i = 0; i < count; i++) picks.push({ pos:pos, slot:pos + (i + 1), player:rows[i] || null });
+        });
+        var filled = picks.filter(function(pick){ return pick.player; });
+        var points = filled.reduce(function(sum, pick){ return sum + Number(pick.player.stats && pick.player.stats.pts_ppr || 0); }, 0);
+        return { team:team, picks:picks, points:points, filled:filled.length };
+      }).filter(function(card){
+        if (!query) return true;
+        if (norm(card.team).indexOf(query) !== -1) return true;
+        return card.picks.some(function(pick){ return pick.player && norm(pick.player.name).indexOf(query) !== -1; });
+      });
+
+      cards.sort(function(a,b){
+        return sortBy === 'points' ? b.points - a.points : a.team.localeCompare(b.team);
+      });
+
+      document.getElementById('onepager-count').textContent = cards.length + (cards.length === 1 ? ' team shown' : ' teams shown');
+
+      grid.innerHTML = cards.map(function(card){
+        return '<article class="op-team">' +
+          '<div class="op-team-head"><h3>' + esc(card.team) + '</h3><span>' + number(card.points) + ' PPR</span></div>' +
+          card.picks.map(function(pick){
+            if (!pick.player) return '<div class="op-slot"><span class="op-tag op-dim">' + esc(pick.slot) + '</span><span class="op-empty">No projected option</span><span class="op-pts">&mdash;</span></div>';
+            var player = pick.player;
+            var align = player.depth_chart_position && player.depth_chart_position !== pick.pos ? '<small>' + esc(player.depth_chart_position) + '</small>' : '';
+            var rank = board.find(function(row){ return playerKey(row) === player.position + ':' + norm(player.name); });
+            var overall = rank && hasBoardRank(rank) ? '<small>#' + esc(rank.overallRank) + '</small>' : '';
+            return '<div class="op-slot">' +
+              '<span class="op-tag op-' + esc(pick.pos.toLowerCase()) + '">' + esc(pick.slot) + '</span>' +
+              '<span class="op-name">' + esc(player.name) + align + overall + injuryDot(player.injury_status) + '</span>' +
+              '<span class="op-pts">' + number(player.stats && player.stats.pts_ppr) + '</span>' +
+            '</div>';
+          }).join('') +
+        '</article>';
+      }).join('') || '<div class="lab-empty">No teams match that search.</div>';
+    }
+
+    function renderInjuryFreshness(){
+      var box = document.getElementById('injury-freshness');
+      if (!box) return;
+      var stamp = injuryFeedUpdated ? new Date(injuryFeedUpdated) : null;
+      var ageEl = document.getElementById('injury-age');
+      var noteEl = document.getElementById('injury-freshness-note');
+      if (!stamp || isNaN(stamp.getTime())) {
+        box.className = 'injury-freshness aging';
+        ageEl.textContent = 'unknown';
+        return;
+      }
+      var days = Math.max(0, Math.floor((Date.now() - stamp.getTime()) / 86400000));
+      var stampText = stamp.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+      box.className = 'injury-freshness ' + (days <= 1 ? 'fresh' : days <= 6 ? 'aging' : 'stale');
+      ageEl.textContent = days === 0 ? 'fetched today' : days === 1 ? '1 day old' : days + ' days old';
+      noteEl.textContent = 'Captured ' + stampText + '. This page ships a static snapshot on purpose so it never depends on a live API mid-draft'
+        + (days >= 2 ? ' — but at ' + days + ' days old, statuses can have moved. Re-check anyone you are about to draft.' : '. Re-check anyone you are about to draft.');
+    }
+
+    function applyLiveInjuries(records){
+      var byId = {}, byName = {};
+      allProjections.forEach(function(row){
+        if (row.player_id != null) byId[String(row.player_id)] = row;
+        byName[row.position + ':' + norm(row.name)] = row;
+      });
+      var touched = 0, cleared = 0;
+      records.forEach(function(record){
+        var player = record.player || {};
+        var row = byId[String(record.player_id)]
+          || byName[(player.position || '') + ':' + norm([player.first_name, player.last_name].filter(Boolean).join(' '))];
+        if (!row) return;
+        var next = player.injury_status || null;
+        if (next !== row.injury_status) { if (!next) cleared++; touched++; }
+        row.injury_status = next;
+        row.injury_body_part = player.injury_body_part || null;
+        row.injury_notes = player.injury_notes || null;
+        row.injury_start_date = player.injury_start_date || null;
+      });
+      injuries = allProjections.filter(function(player){
+        return isRostered(player) && player.injury_status;
+      }).sort(function(a, b){
+        return Number(b.stats && b.stats.pts_ppr || 0) - Number(a.stats && a.stats.pts_ppr || 0);
+      });
+      return { touched:touched, cleared:cleared };
+    }
+
+    function attemptLiveInjuryRefresh(){
+      var button = document.getElementById('injury-refresh');
+      var out = document.getElementById('injury-refresh-result');
+      button.disabled = true;
+      button.textContent = 'Refreshing…';
+      out.className = 'fresh-result';
+      out.textContent = 'Contacting Sleeper…';
+      var url = 'https://api.sleeper.com/projections/nfl/2026?season_type=regular&order_by=pts_ppr';
+      var timeout = new Promise(function(_, reject){ setTimeout(function(){ reject(new Error('timed out after 20s')); }, 20000); });
+      Promise.race([fetch(url, { cache:'no-store' }), timeout]).then(function(response){
+        if (!response.ok) throw new Error('Sleeper answered HTTP ' + response.status);
+        return response.json();
+      }).then(function(records){
+        if (!Array.isArray(records) || !records.length) throw new Error('Sleeper returned no records');
+        var result = applyLiveInjuries(records);
+        injuryFeedUpdated = new Date().toISOString();
+        renderInjuryFreshness();
+        renderInjuries();
+        renderOnePager();
+        renderBoard();
+        out.className = 'fresh-result ok';
+        out.textContent = 'Live refresh succeeded at ' + new Date().toLocaleTimeString()
+          + ' — ' + records.length + ' records read, ' + result.touched + ' status changes applied ('
+          + result.cleared + ' players cleared). This update is in-memory only; reloading the page returns to the shipped snapshot.';
+      }).catch(function(error){
+        out.className = 'fresh-result err';
+        out.textContent = 'Live refresh FAILED (' + (error && error.message ? error.message : 'unknown error')
+          + '). Nothing was changed — you are still looking at the shipped snapshot above. Use the source links to check statuses by hand.';
+      }).then(function(){
+        button.disabled = false;
+        button.textContent = 'Try live refresh';
+      });
+    }
+
     function renderNotes(watch, tips){
       document.getElementById('lab-watch').innerHTML = watch.watchlist.map(function(item, index){
         return '<article class="watch-card"><span class="compare-meta">Watch ' + String(index + 1).padStart(2, '0') + '</span><h3>' + esc(item.name) + '</h3><p>' + esc(item.angle) + '</p></article>';
@@ -2636,6 +2904,7 @@
       var projectionByKey = {};
       var projectionPosRank = {};
       var rosteredProjections = projections.players.filter(isRostered);
+      allProjections = projections.players;
       rosteredProjections.forEach(function(player){
         projectionByKey[player.position + ':' + norm(player.name)] = player;
         if (player.position === 'DEF') projectionByKey['DEF:' + player.team] = player;
@@ -2737,6 +3006,7 @@
       document.getElementById('injury-updated').textContent = updated && !isNaN(updated.getTime())
         ? updated.toLocaleDateString('en-US', { month:'short', day:'numeric' })
         : 'Current feed';
+      renderInjuryFreshness();
       renderNotes(watch, tips);
       renderLeagueHistory();
       teamReports = teams.teams;
@@ -2748,6 +3018,7 @@
       }).join('');
       renderTeam(teamReports[0].abbr);
       renderDepthChart();
+      renderOnePager();
       renderDraftRoom();
       renderBoard();
       renderCompare();
@@ -2769,6 +3040,12 @@
     document.getElementById('league-season').addEventListener('change', renderLeagueHistory);
     document.getElementById('depth-team').addEventListener('change', renderDepthChart);
     document.getElementById('depth-position').addEventListener('change', renderDepthChart);
+    ['onepager-search','onepager-depth','onepager-position','onepager-sort'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', renderOnePager);
+    });
+    document.getElementById('onepager-print').addEventListener('click', function(){ window.print(); });
+    document.getElementById('injury-refresh').addEventListener('click', attemptLiveInjuryRefresh);
     document.querySelectorAll('.compare-search').forEach(function(input){
       input.setAttribute('aria-expanded', 'false');
       input.addEventListener('focus', function(){ renderCompareSuggestions(input); });
@@ -2809,6 +3086,15 @@
     document.getElementById('injury-status-filter').addEventListener('change', renderInjuries);
     document.getElementById('injury-scope').addEventListener('change', renderInjuries);
     document.getElementById('draft-queue').addEventListener('click', function(e){
+      var move = e.target.closest('[data-move-queue]');
+      if (move) {
+        var from = queueKeys.indexOf(move.dataset.playerKey);
+        var to = from + (move.dataset.moveQueue === 'up' ? -1 : 1);
+        if (from === -1 || to < 0 || to >= queueKeys.length) return;
+        queueKeys.splice(to, 0, queueKeys.splice(from, 1)[0]);
+        renderDraftRoom();
+        return;
+      }
       var button = e.target.closest('[data-remove-queue]');
       if (!button) return;
       queueKeys = removeKey(queueKeys, button.dataset.removeQueue);
