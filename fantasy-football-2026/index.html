@@ -2454,18 +2454,45 @@
       window.scrollTo(0, 0);
     }
 
+    // Deep links so a second monitor can pin one window per section:
+    // #lab/onepager, #lab/injuries, #lab/rankings and so on. show() resets each
+    // tab group to its first tab, so the sub-tab is applied after it runs.
+    function applyDeepTab(section, slug){
+      if (section !== 'lab' || !slug) return;
+      var group = document.querySelector('[aria-label="Player Lab views"]');
+      if (!group) return;
+      var btn = group.querySelector('[aria-controls=' + JSON.stringify('p-lab-' + slug) + ']');
+      if (!btn) return;
+      group.querySelectorAll('.tab').forEach(function(t){ setTab(t, t === btn); });
+    }
+    function routeFromHash(){
+      var raw = location.hash.replace('#','');
+      var slash = raw.indexOf('/');
+      var section = slash === -1 ? raw : raw.slice(0, slash);
+      show(section);
+      applyDeepTab(section, slash === -1 ? '' : raw.slice(slash + 1));
+    }
+
+    var suppressRoute = false;
     document.addEventListener('click', function(e){
       var btn = e.target.closest ? e.target.closest('.tab') : null;
       if (!btn) return;
       var group = btn.closest('.tabs');
       group.querySelectorAll('.tab').forEach(function(t){ setTab(t, t === btn); });
+      if (group.getAttribute('aria-label') !== 'Player Lab views') return;
+      var slug = (btn.getAttribute('aria-controls') || '').replace('p-lab-', '');
+      // update the address bar without re-running the router (which scrolls to top)
+      suppressRoute = true;
+      location.hash = 'lab/' + slug;
+      setTimeout(function(){ suppressRoute = false; }, 0);
     });
 
     window.addEventListener('hashchange', function(){
-      show(location.hash.replace('#',''));
+      if (suppressRoute) return;
+      routeFromHash();
     });
 
-    show(location.hash.replace('#',''));
+    routeFromHash();
   })();
 </script>
 
@@ -2545,9 +2572,18 @@
         queueKeys = [];
       }
       syncDraftSets();
+      try { lastSavedState = JSON.stringify({ drafted:draftedKeys, queue:queueKeys }); } catch (error) {}
     }
+    // lastSavedState also breaks the sync loop: a window re-rendering from
+    // another window's write must not write the same value straight back.
+    var lastSavedState = null;
     function saveDraftState(){
-      try { localStorage.setItem(draftStateKey, JSON.stringify({ drafted:draftedKeys, queue:queueKeys })); } catch (error) {}
+      try {
+        var payload = JSON.stringify({ drafted:draftedKeys, queue:queueKeys });
+        if (payload === lastSavedState) return;
+        lastSavedState = payload;
+        localStorage.setItem(draftStateKey, payload);
+      } catch (error) {}
     }
     function isRostered(player){
       return Boolean(player && player.team && player.team !== 'FA');
@@ -3448,6 +3484,20 @@
       renderDraftRoom();
       if (!applyRowChange(key)) renderBoard();
     });
+    // Draft day often runs across two monitors with a window per section.
+    // 'storage' fires in the *other* windows, so mirror the draft state there
+    // rather than letting each window drift with a stale board.
+    window.addEventListener('storage', function(e){
+      if (e.key !== draftStateKey) return;
+      lastSavedState = e.newValue;
+      loadDraftState();
+      renderDraftRoom();
+      renderBoard();
+      renderCompare();
+      var status = document.getElementById('lab-status');
+      if (status) status.innerHTML = boardStatusText() + ' · <em>synced from another window</em>';
+    });
+
     document.getElementById('rail-queue-jump').addEventListener('click', function(){
       var wrap = document.querySelector('#p-lab-rankings .lab-table-wrap');
       if (wrap) wrap.scrollIntoView({ behavior:'smooth', block:'start' });

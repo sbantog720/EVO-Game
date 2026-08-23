@@ -185,3 +185,21 @@ test("reformats the board for portrait without a sideways scroll", () => {
   // the empty-queue hint must not be split across the queue grid
   assert.match(html, /\.rail-queue li\.rail-hint\{ display:block;/);
 });
+
+test("supports one window per section across two monitors", () => {
+  // each Player Lab tab is addressable, so a window can be pinned and refreshed
+  assert.match(html, /function applyDeepTab/);
+  assert.match(html, /function routeFromHash/);
+  assert.match(html, /location\.hash = 'lab\/' \+ slug/);
+  assert.match(html, /raw\.indexOf\('\/'\)/);
+  // clicking a tab must not re-run the router (which scrolls back to the top)
+  assert.match(html, /suppressRoute = true/);
+
+  // draft state mirrors into the other windows instead of going stale
+  assert.match(html, /addEventListener\('storage'/);
+  assert.match(html, /synced from another window/);
+  // and the mirror must not write the value straight back, or two windows
+  // would ping-pong storage events at each other forever
+  assert.match(html, /lastSavedState = e\.newValue/);
+  assert.match(html, /if \(payload === lastSavedState\) return;/);
+});
