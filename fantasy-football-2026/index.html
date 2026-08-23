@@ -323,13 +323,22 @@
     grid-auto-flow:column; column-gap:40px;
   }
   .mock li{
-    display:grid; grid-template-columns:26px 1fr auto; gap:10px; align-items:baseline;
+    display:grid; grid-template-columns:26px 1fr 30px 44px; gap:10px; align-items:baseline;
     padding:8px 0; border-bottom:1px solid var(--rule); background:none; font-size:.93rem;
   }
   .mock li:nth-child(-n+8){ border-right:0; }
   .mock li:nth-child(8), .mock li:nth-child(16){ border-bottom:0; }
   .mock .rd{ font-family:var(--data); font-size:9.5px; color:var(--dim); }
   .mock .nm{ color:var(--text); font-weight:500; }
+  /* the slot each pick is drafted to fill — two of them are FLEX this year */
+  .mock .mk-slot{
+    font-family:var(--data); font-size:9.5px; letter-spacing:.12em;
+    text-align:right; color:var(--dim);
+  }
+  .mock .mk-slot.st{ color:var(--muted); }
+  .mock .mk-slot.fx{ color:var(--pc); }
+  .mock-note{ margin:12px 0 0; padding:10px 0 0; border-top:1px solid var(--rule);
+    font-size:.87rem; color:var(--muted); max-width:82ch; }
 
   /* ================= position marks ================= */
   .pos-badge{
@@ -1051,7 +1060,7 @@
     <p class="toc-lbl">Draft Day</p>
     <div class="toc-grid">
       <a class="toc-card" href="#plan"><span class="toc-code">09</span><span class="toc-copy"><span class="toc-name">Draft Plan</span><span class="toc-desc">Roster construction by slot and round.</span></span></a>
-      <a class="toc-card" href="#mocks"><span class="toc-code">10</span><span class="toc-copy"><span class="toc-name">Mock Drafts</span><span class="toc-desc">Complete builds from multiple draft positions.</span></span></a>
+      <a class="toc-card" href="#mocks"><span class="toc-code">10</span><span class="toc-copy"><span class="toc-name">Mock Drafts</span><span class="toc-desc">Complete two-flex builds from three draft seats.</span></span></a>
       <a class="toc-card" href="#lab"><span class="toc-code">11</span><span class="toc-copy"><span class="toc-name">Player Lab</span><span class="toc-desc">Search the expanded board, compare projections, and check all 32 depth charts.</span></span></a>
       <a class="toc-card" href="#sources"><span class="toc-code">12</span><span class="toc-copy"><span class="toc-name">Sources</span><span class="toc-desc">The reporting, feeds, and methods behind the board.</span></span></a>
     </div>
@@ -2067,7 +2076,7 @@
       <span class="sec-glyph">10</span>
       <div class="sec-title">
         <h2>Mock drafts</h2>
-        <p>Full 16-round mocks built off the boards. Name and position only.</p>
+        <p>Full 16-round mocks built off the boards, for the 2026 two-flex lineup. Every pick carries the slot it fills.</p>
       </div>
     </div>
   </div>
@@ -2076,78 +2085,93 @@
       <button class="tab" role="tab" aria-selected="true" aria-controls="p-mock-1">1st pick</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-mock-6">Middle pick</button>
       <button class="tab" role="tab" aria-selected="false" aria-controls="p-mock-12">Last pick</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p-mock-flex">Two flex</button>
     </div>
 
     <div class="panel active body-dense" id="p-mock-1" role="tabpanel">
       <div class="mock">
-        <div class="mock-head"><span class="s">1st pick</span><span class="t">1.01</span></div>
+        <div class="mock-head"><span class="s">1st pick</span><span class="t">1.01 · 2 FLEX</span></div>
         <ul>
-          <li><span class="rd">R1</span><span class="nm"><button class="pl" data-p="jahmyr-gibbs" aria-expanded="false">Jahmyr Gibbs</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R2</span><span class="nm"><button class="pl" data-p="chase-brown" aria-expanded="false">Chase Brown</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R3</span><span class="nm"><button class="pl" data-p="devonta-smith" aria-expanded="false">DeVonta Smith</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R4</span><span class="nm"><button class="pl" data-p="emeka-egbuka" aria-expanded="false">Emeka Egbuka</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R5</span><span class="nm"><button class="pl" data-p="bhayshul-tuten" aria-expanded="false">Bhayshul Tuten</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R6</span><span class="nm"><button class="pl" data-p="luther-burden-iii" aria-expanded="false">Luther Burden III</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R7</span><span class="nm"><button class="pl" data-p="colston-loveland" aria-expanded="false">Colston Loveland</button></span><span class="pos-badge p-TE">TE</span></li>
-          <li><span class="rd">R8</span><span class="nm"><button class="pl" data-p="bo-nix" aria-expanded="false">Bo Nix</button></span><span class="pos-badge p-QB">QB</span></li>
-          <li><span class="rd">R9</span><span class="nm"><button class="pl" data-p="josh-downs" aria-expanded="false">Josh Downs</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R10</span><span class="nm"><button class="pl" data-p="jadarian-price" aria-expanded="false">Jadarian Price</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R11</span><span class="nm"><button class="pl" data-p="ryan-flournoy" aria-expanded="false">Ryan Flournoy</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R12</span><span class="nm"><button class="pl" data-p="kenneth-gainwell" aria-expanded="false">Kenneth Gainwell</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R13</span><span class="nm"><button class="pl" data-p="gunnar-helm" aria-expanded="false">Gunnar Helm</button></span><span class="pos-badge p-TE">TE</span></li>
-          <li><span class="rd">R14</span><span class="nm"><button class="pl" data-p="tyler-shough" aria-expanded="false">Tyler Shough</button></span><span class="pos-badge p-QB">QB</span></li>
-          <li><span class="rd">R15</span><span class="nm">Rams D/ST</span><span class="pos-badge p-DST">DST</span></li>
-          <li><span class="rd">R16</span><span class="nm">Kicker</span><span class="pos-badge p-K">K</span></li>
+        <li><span class="rd">R1</span><span class="nm"><button class="pl" data-p="jahmyr-gibbs" aria-expanded="false">Jahmyr Gibbs</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot st">RB1</span></li>
+        <li><span class="rd">R2</span><span class="nm"><button class="pl" data-p="devonta-smith" aria-expanded="false">DeVonta Smith</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot st">WR1</span></li>
+        <li><span class="rd">R3</span><span class="nm"><button class="pl" data-p="chase-brown" aria-expanded="false">Chase Brown</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot st">RB2</span></li>
+        <li><span class="rd">R4</span><span class="nm"><button class="pl" data-p="bhayshul-tuten" aria-expanded="false">Bhayshul Tuten</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot fx">FLEX</span></li>
+        <li><span class="rd">R5</span><span class="nm"><button class="pl" data-p="josh-downs" aria-expanded="false">Josh Downs</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot st">WR2</span></li>
+        <li><span class="rd">R6</span><span class="nm"><button class="pl" data-p="colston-loveland" aria-expanded="false">Colston Loveland</button></span><span class="pos-badge p-TE">TE</span><span class="mk-slot st">TE</span></li>
+        <li><span class="rd">R7</span><span class="nm"><button class="pl" data-p="luther-burden-iii" aria-expanded="false">Luther Burden III</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot fx">FLEX</span></li>
+        <li><span class="rd">R8</span><span class="nm"><button class="pl" data-p="kenneth-gainwell" aria-expanded="false">Kenneth Gainwell</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R9</span><span class="nm"><button class="pl" data-p="brian-thomas-jr" aria-expanded="false">Brian Thomas Jr.</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R10</span><span class="nm"><button class="pl" data-p="jonathon-brooks" aria-expanded="false">Jonathon Brooks</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R11</span><span class="nm"><button class="pl" data-p="ryan-flournoy" aria-expanded="false">Ryan Flournoy</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R12</span><span class="nm"><button class="pl" data-p="gunnar-helm" aria-expanded="false">Gunnar Helm</button></span><span class="pos-badge p-TE">TE</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R13</span><span class="nm"><button class="pl" data-p="bo-nix" aria-expanded="false">Bo Nix</button></span><span class="pos-badge p-QB">QB</span><span class="mk-slot st">QB</span></li>
+        <li><span class="rd">R14</span><span class="nm"><button class="pl" data-p="jalen-nailor" aria-expanded="false">Jalen Nailor</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R15</span><span class="nm">Rams D/ST</span><span class="pos-badge p-DST">DST</span><span class="mk-slot st">DST</span></li>
+        <li><span class="rd">R16</span><span class="nm">Kicker</span><span class="pos-badge p-K">K</span><span class="mk-slot st">K</span></li>
         </ul>
+        <p class="mock-note">Nine straight RB/WR/TE. Tuten and Burden are drafted to start in the flex, not to sit behind it.</p>
       </div>
     </div>
 
     <div class="panel body-dense" id="p-mock-6" role="tabpanel">
       <div class="mock">
-        <div class="mock-head"><span class="s">Middle pick</span><span class="t">1.06</span></div>
+        <div class="mock-head"><span class="s">Middle pick</span><span class="t">1.06 · 2 FLEX</span></div>
         <ul>
-          <li><span class="rd">R1</span><span class="nm"><button class="pl" data-p="amon-ra-st-brown" aria-expanded="false">Amon-Ra St. Brown</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R2</span><span class="nm"><button class="pl" data-p="james-cook" aria-expanded="false">James Cook</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R3</span><span class="nm"><button class="pl" data-p="george-pickens" aria-expanded="false">George Pickens</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R4</span><span class="nm"><button class="pl" data-p="de-von-achane" aria-expanded="false">De'Von Achane</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R5</span><span class="nm"><button class="pl" data-p="rashee-rice" aria-expanded="false">Rashee Rice</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R6</span><span class="nm"><button class="pl" data-p="cam-skattebo" aria-expanded="false">Cam Skattebo</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R7</span><span class="nm"><button class="pl" data-p="luther-burden-iii" aria-expanded="false">Luther Burden III</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R8</span><span class="nm"><button class="pl" data-p="bo-nix" aria-expanded="false">Bo Nix</button></span><span class="pos-badge p-QB">QB</span></li>
-          <li><span class="rd">R9</span><span class="nm"><button class="pl" data-p="josh-downs" aria-expanded="false">Josh Downs</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R10</span><span class="nm"><button class="pl" data-p="kenneth-gainwell" aria-expanded="false">Kenneth Gainwell</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R11</span><span class="nm"><button class="pl" data-p="gunnar-helm" aria-expanded="false">Gunnar Helm</button></span><span class="pos-badge p-TE">TE</span></li>
-          <li><span class="rd">R12</span><span class="nm"><button class="pl" data-p="jadarian-price" aria-expanded="false">Jadarian Price</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R13</span><span class="nm"><button class="pl" data-p="chig-okonkwo" aria-expanded="false">Chig Okonkwo</button></span><span class="pos-badge p-TE">TE</span></li>
-          <li><span class="rd">R14</span><span class="nm"><button class="pl" data-p="tyler-shough" aria-expanded="false">Tyler Shough</button></span><span class="pos-badge p-QB">QB</span></li>
-          <li><span class="rd">R15</span><span class="nm">Broncos D/ST</span><span class="pos-badge p-DST">DST</span></li>
-          <li><span class="rd">R16</span><span class="nm">Kicker</span><span class="pos-badge p-K">K</span></li>
+        <li><span class="rd">R1</span><span class="nm"><button class="pl" data-p="amon-ra-st-brown" aria-expanded="false">Amon-Ra St. Brown</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot st">WR1</span></li>
+        <li><span class="rd">R2</span><span class="nm"><button class="pl" data-p="josh-jacobs" aria-expanded="false">Josh Jacobs</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot st">RB1</span></li>
+        <li><span class="rd">R3</span><span class="nm"><button class="pl" data-p="de-von-achane" aria-expanded="false">De'Von Achane</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot st">RB2</span></li>
+        <li><span class="rd">R4</span><span class="nm"><button class="pl" data-p="george-pickens" aria-expanded="false">George Pickens</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot st">WR2</span></li>
+        <li><span class="rd">R5</span><span class="nm"><button class="pl" data-p="cam-skattebo" aria-expanded="false">Cam Skattebo</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot fx">FLEX</span></li>
+        <li><span class="rd">R6</span><span class="nm"><button class="pl" data-p="jaylen-waddle" aria-expanded="false">Jaylen Waddle</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot fx">FLEX</span></li>
+        <li><span class="rd">R7</span><span class="nm"><button class="pl" data-p="kyle-pitts" aria-expanded="false">Kyle Pitts</button></span><span class="pos-badge p-TE">TE</span><span class="mk-slot st">TE</span></li>
+        <li><span class="rd">R8</span><span class="nm"><button class="pl" data-p="courtland-sutton" aria-expanded="false">Courtland Sutton</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R9</span><span class="nm"><button class="pl" data-p="trey-benson" aria-expanded="false">Trey Benson</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R10</span><span class="nm"><button class="pl" data-p="parker-washington" aria-expanded="false">Parker Washington</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R11</span><span class="nm"><button class="pl" data-p="chris-rodriguez" aria-expanded="false">Chris Rodriguez</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R12</span><span class="nm"><button class="pl" data-p="chig-okonkwo" aria-expanded="false">Chig Okonkwo</button></span><span class="pos-badge p-TE">TE</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R13</span><span class="nm"><button class="pl" data-p="tyler-shough" aria-expanded="false">Tyler Shough</button></span><span class="pos-badge p-QB">QB</span><span class="mk-slot st">QB</span></li>
+        <li><span class="rd">R14</span><span class="nm"><button class="pl" data-p="isaac-teslaa" aria-expanded="false">Isaac TeSlaa</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R15</span><span class="nm">Broncos D/ST</span><span class="pos-badge p-DST">DST</span><span class="mk-slot st">DST</span></li>
+        <li><span class="rd">R16</span><span class="nm">Kicker</span><span class="pos-badge p-K">K</span><span class="mk-slot st">K</span></li>
         </ul>
+        <p class="mock-note">Two backs at the 2–3 turn, then Skattebo and Waddle for the flex. Pitts is the TE1 in Round 7 — that slot still has to be filled.</p>
       </div>
     </div>
 
     <div class="panel body-dense" id="p-mock-12" role="tabpanel">
       <div class="mock">
-        <div class="mock-head"><span class="s">Last pick</span><span class="t">1.12</span></div>
+        <div class="mock-head"><span class="s">Last pick</span><span class="t">1.12 · 2 FLEX</span></div>
         <ul>
-          <li><span class="rd">R1</span><span class="nm"><button class="pl" data-p="bijan-robinson" aria-expanded="false">Bijan Robinson</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R2</span><span class="nm"><button class="pl" data-p="ceedee-lamb" aria-expanded="false">CeeDee Lamb</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R3</span><span class="nm"><button class="pl" data-p="jonathan-taylor" aria-expanded="false">Jonathan Taylor</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R4</span><span class="nm"><button class="pl" data-p="nico-collins" aria-expanded="false">Nico Collins</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R5</span><span class="nm"><button class="pl" data-p="bucky-irving" aria-expanded="false">Bucky Irving</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R6</span><span class="nm"><button class="pl" data-p="malik-nabers" aria-expanded="false">Malik Nabers</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R7</span><span class="nm"><button class="pl" data-p="treveyon-henderson" aria-expanded="false">TreVeyon Henderson</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R8</span><span class="nm"><button class="pl" data-p="colston-loveland" aria-expanded="false">Colston Loveland</button></span><span class="pos-badge p-TE">TE</span></li>
-          <li><span class="rd">R9</span><span class="nm"><button class="pl" data-p="josh-downs" aria-expanded="false">Josh Downs</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R10</span><span class="nm"><button class="pl" data-p="bhayshul-tuten" aria-expanded="false">Bhayshul Tuten</button></span><span class="pos-badge p-RB">RB</span></li>
-          <li><span class="rd">R11</span><span class="nm"><button class="pl" data-p="bo-nix" aria-expanded="false">Bo Nix</button></span><span class="pos-badge p-QB">QB</span></li>
-          <li><span class="rd">R12</span><span class="nm"><button class="pl" data-p="ryan-flournoy" aria-expanded="false">Ryan Flournoy</button></span><span class="pos-badge p-WR">WR</span></li>
-          <li><span class="rd">R13</span><span class="nm"><button class="pl" data-p="gunnar-helm" aria-expanded="false">Gunnar Helm</button></span><span class="pos-badge p-TE">TE</span></li>
-          <li><span class="rd">R14</span><span class="nm"><button class="pl" data-p="tyler-shough" aria-expanded="false">Tyler Shough</button></span><span class="pos-badge p-QB">QB</span></li>
-          <li><span class="rd">R15</span><span class="nm">Ravens D/ST</span><span class="pos-badge p-DST">DST</span></li>
-          <li><span class="rd">R16</span><span class="nm">Kicker</span><span class="pos-badge p-K">K</span></li>
+        <li><span class="rd">R1</span><span class="nm"><button class="pl" data-p="james-cook" aria-expanded="false">James Cook</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot st">RB1</span></li>
+        <li><span class="rd">R2</span><span class="nm"><button class="pl" data-p="brock-bowers" aria-expanded="false">Brock Bowers</button></span><span class="pos-badge p-TE">TE</span><span class="mk-slot st">TE</span></li>
+        <li><span class="rd">R3</span><span class="nm"><button class="pl" data-p="rome-odunze" aria-expanded="false">Rome Odunze</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot st">WR1</span></li>
+        <li><span class="rd">R4</span><span class="nm"><button class="pl" data-p="malik-nabers" aria-expanded="false">Malik Nabers</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot st">WR2</span></li>
+        <li><span class="rd">R5</span><span class="nm"><button class="pl" data-p="derrick-henry" aria-expanded="false">Derrick Henry</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot st">RB2</span></li>
+        <li><span class="rd">R6</span><span class="nm"><button class="pl" data-p="kenneth-walker-iii" aria-expanded="false">Kenneth Walker III</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot fx">FLEX</span></li>
+        <li><span class="rd">R7</span><span class="nm"><button class="pl" data-p="mike-evans" aria-expanded="false">Mike Evans</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot fx">FLEX</span></li>
+        <li><span class="rd">R8</span><span class="nm"><button class="pl" data-p="carnell-tate" aria-expanded="false">Carnell Tate</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R9</span><span class="nm"><button class="pl" data-p="zach-charbonnet" aria-expanded="false">Zach Charbonnet</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R10</span><span class="nm"><button class="pl" data-p="jordyn-tyson" aria-expanded="false">Jordyn Tyson</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R11</span><span class="nm"><button class="pl" data-p="jake-ferguson" aria-expanded="false">Jake Ferguson</button></span><span class="pos-badge p-TE">TE</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R12</span><span class="nm"><button class="pl" data-p="kc-concepcion" aria-expanded="false">KC Concepcion</button></span><span class="pos-badge p-WR">WR</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R13</span><span class="nm"><button class="pl" data-p="cam-ward" aria-expanded="false">Cam Ward</button></span><span class="pos-badge p-QB">QB</span><span class="mk-slot st">QB</span></li>
+        <li><span class="rd">R14</span><span class="nm"><button class="pl" data-p="keaton-mitchell" aria-expanded="false">Keaton Mitchell</button></span><span class="pos-badge p-RB">RB</span><span class="mk-slot">BE</span></li>
+        <li><span class="rd">R15</span><span class="nm">Seahawks D/ST</span><span class="pos-badge p-DST">DST</span><span class="mk-slot st">DST</span></li>
+        <li><span class="rd">R16</span><span class="nm">Kicker</span><span class="pos-badge p-K">K</span><span class="mk-slot st">K</span></li>
         </ul>
+        <p class="mock-note">Bowers at 2.01 settles the tight end slot, so both flex spots go to volume: Walker and Evans.</p>
       </div>
+    </div>
+
+    <div class="panel body-list" id="p-mock-flex" role="tabpanel">
+      <ul class="rules">
+        <li><b>The 2026 lineup.</b> 1 QB · 2 RB · 2 WR · 1 TE · 2 FLEX · 1 D/ST · 1 K. Ten starters, six bench, sixteen rounds.</li>
+        <li><b>Twelve more starters in the room.</b> Seven of your ten starters now come out of the RB/WR/TE pool — 84 across the league every week, up from 72.</li>
+        <li><b>Skill empties a round early.</b> Every RB/WR/TE tier on the boards drains sooner than its label says. Buy at the front of a tier, not the back.</li>
+        <li><b>The flex is a starter.</b> All three builds fill both spots with a Round 4–7 pick, not with a bench body.</li>
+        <li><b>One quarterback, Round 13.</b> Six bench spots behind seven skill starters is what pays for the second flex. The plan's roster table allows one or two arms; the second flex settles it.</li>
+        <li><b>D and K still go last.</b> Rounds 15 and 16. That does not change.</li>
+      </ul>
     </div>
   </div>
 </div>
