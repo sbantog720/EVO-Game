@@ -203,3 +203,18 @@ test("supports one window per section across two monitors", () => {
   assert.match(html, /lastSavedState = e\.newValue/);
   assert.match(html, /if \(payload === lastSavedState\) return;/);
 });
+
+test("takes drafted players off the one-pager", () => {
+  assert.match(html, /id="onepager-drafted"/);
+  assert.match(html, /Drafted: strike out, keep slot/);
+  assert.match(html, /Drafted: hide, promote next man up/);
+  assert.match(html, /function depthKey/);
+  // struck-out slots are marked and priced as gone
+  assert.match(html, /op-gone/);
+  assert.match(html, /gone \? 'GONE'/);
+  assert.match(html, /\.op-slot\.op-gone \.op-name\{ text-decoration:line-through/);
+  // a drafted player must not count toward the team's projected total
+  assert.match(html, /isDrafted\(depthKey\(pick\.player\)\) \? sum : sum \+/);
+  // and the one-pager has to follow the draft room, including cross-window syncs
+  assert.match(html, /renderQueueRail\(\);\s*\n\s*\/\/ the one-pager strikes out drafted players[\s\S]{0,80}renderOnePager\(\);/);
+});

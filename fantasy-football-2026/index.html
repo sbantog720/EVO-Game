@@ -726,6 +726,9 @@
   .op-inj{ display:inline-block; width:6px; height:6px; border-radius:50%; margin-left:5px; vertical-align:middle; }
   .op-inj.q{ background:#fbbf24; } .op-inj.out{ background:#f87171; }
   .op-empty{ color:var(--dim); font-style:italic; font-size:.7rem; padding:3px 0; }
+  .op-slot.op-gone .op-name{ text-decoration:line-through; color:var(--muted); opacity:.6; }
+  .op-slot.op-gone .op-pts{ color:#f87171; font-weight:800; font-size:.58rem; letter-spacing:.06em; }
+  .op-slot.op-gone .op-inj{ display:none; }
 
   /* ================= Draft-day rail: compare + queue at a glance ================= */
   .lab-workspace{ display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:14px; align-items:start; }
@@ -2316,12 +2319,16 @@
           <option value="team">Sort by team</option>
           <option value="points">Sort by projected skill points</option>
         </select>
+        <select class="lab-control" id="onepager-drafted" aria-label="How to treat drafted players">
+          <option value="strike">Drafted: strike out, keep slot</option>
+          <option value="hide">Drafted: hide, promote next man up</option>
+        </select>
         <button class="onepager-print" id="onepager-print" type="button">Print / PDF</button>
       </div>
       <div class="onepager-legend">
         <span><b>QB1</b> starter</span><span><b>RB1</b> lead back</span><span><b>WR1</b> alpha</span><span><b>TE1</b> starter</span>
         <span><i class="op-inj q"></i> Questionable</span><span><i class="op-inj out"></i> PUP / IR / Out</span>
-        <span id="onepager-count"></span>
+        <span id="onepager-count"></span><span id="onepager-drafted-count"></span>
       </div>
       <div class="onepager-grid" id="onepager-grid"><div class="lab-empty">Loading all 32 team depth charts…</div></div>
       <div class="provenance"><strong>One-pager method:</strong> slot order is Sleeper&rsquo;s reported depth-chart order, falling back to projected PPR where the feed leaves a team unordered. WR alignment (LWR/RWR/SWR) is shown where the feed supplies it, so a slot receiver reading WR1 is an alignment label, not a target-share guarantee. Injury dots reflect the same snapshot as the Injury Report tab &mdash; check its freshness banner before trusting a dot on draft day.</div>
@@ -2810,6 +2817,8 @@
         '</span>';
       }).join('') : '<span class="queue-chip">Queue is empty</span>';
       renderQueueRail();
+      // the one-pager strikes out drafted players, so it follows the draft room
+      renderOnePager();
       saveDraftState();
     }
 
@@ -3048,6 +3057,7 @@
       two: [['QB',2],['RB',2],['WR',2],['TE',2]],
       full: [['QB',4],['RB',4],['WR',4],['TE',4]]
     };
+    function depthKey(player){ return player.position + ':' + norm(player.name); }
     function injuryDot(status){
       if (!status) return '';
       var severe = ['PUP','IR','DNR','NA','Out','Doubtful'].indexOf(status) !== -1;
@@ -3067,13 +3077,22 @@
       var mode = document.getElementById('onepager-depth').value;
       var only = document.getElementById('onepager-position').value;
       var sortBy = document.getElementById('onepager-sort').value;
+      var draftedMode = document.getElementById('onepager-drafted').value;
       var slots = (ONEPAGER_SLOTS[mode] || ONEPAGER_SLOTS.starters).filter(function(slot){
         return !only || slot[0] === only;
       });
 
       var byTeam = {};
+      var draftedOut = 0;
       depthPlayers.forEach(function(player){
         if (!player.team) return;
+        // 'hide' drops drafted players before slotting, so the next man up takes
+        // the slot. 'strike' keeps them in place, which preserves the real depth
+        // order -- a WR2 behind a drafted stud is not suddenly a WR1.
+        if (isDrafted(depthKey(player))) {
+          draftedOut++;
+          if (draftedMode === 'hide') return;
+        }
         (byTeam[player.team] || (byTeam[player.team] = [])).push(player);
       });
 
@@ -3085,7 +3104,9 @@
           for (var i = 0; i < count; i++) picks.push({ pos:pos, slot:pos + (i + 1), player:rows[i] || null });
         });
         var filled = picks.filter(function(pick){ return pick.player; });
-        var points = filled.reduce(function(sum, pick){ return sum + Number(pick.player.stats && pick.player.stats.pts_ppr || 0); }, 0);
+        var points = filled.reduce(function(sum, pick){
+          return isDrafted(depthKey(pick.player)) ? sum : sum + Number(pick.player.stats && pick.player.stats.pts_ppr || 0);
+        }, 0);
         return { team:team, picks:picks, points:points, filled:filled.length };
       }).filter(function(card){
         if (!query) return true;
@@ -3098,6 +3119,8 @@
       });
 
       document.getElementById('onepager-count').textContent = cards.length + (cards.length === 1 ? ' team shown' : ' teams shown');
+      document.getElementById('onepager-drafted-count').textContent = draftedOut
+        ? draftedOut + (draftedMode === 'hide' ? ' drafted hidden' : ' drafted struck out') : '';
 
       grid.innerHTML = cards.map(function(card){
         return '<article class="op-team">' +
@@ -3106,12 +3129,13 @@
             if (!pick.player) return '<div class="op-slot"><span class="op-tag op-dim">' + esc(pick.slot) + '</span><span class="op-empty">No projected option</span><span class="op-pts">&mdash;</span></div>';
             var player = pick.player;
             var align = player.depth_chart_position && player.depth_chart_position !== pick.pos ? '<small>' + esc(player.depth_chart_position) + '</small>' : '';
-            var rank = boardByKey[player.position + ':' + norm(player.name)];
+            var rank = boardByKey[depthKey(player)];
             var overall = rank && hasBoardRank(rank) ? '<small>#' + esc(rank.overallRank) + '</small>' : '';
-            return '<div class="op-slot">' +
-              '<span class="op-tag op-' + esc(pick.pos.toLowerCase()) + '">' + esc(pick.slot) + '</span>' +
+            var gone = isDrafted(depthKey(player));
+            return '<div class="op-slot' + (gone ? ' op-gone' : '') + '">' +
+              '<span class="op-tag op-' + (gone ? 'dim' : esc(pick.pos.toLowerCase())) + '">' + esc(pick.slot) + '</span>' +
               '<span class="op-name">' + esc(player.name) + align + overall + injuryDot(player.injury_status) + '</span>' +
-              '<span class="op-pts">' + number(player.stats && player.stats.pts_ppr) + '</span>' +
+              '<span class="op-pts">' + (gone ? 'GONE' : number(player.stats && player.stats.pts_ppr)) + '</span>' +
             '</div>';
           }).join('') +
         '</article>';
@@ -3446,7 +3470,7 @@
     document.getElementById('league-season').addEventListener('change', renderLeagueHistory);
     document.getElementById('depth-team').addEventListener('change', renderDepthChart);
     document.getElementById('depth-position').addEventListener('change', renderDepthChart);
-    ['onepager-search','onepager-depth','onepager-position','onepager-sort'].forEach(function(id){
+    ['onepager-search','onepager-depth','onepager-position','onepager-sort','onepager-drafted'].forEach(function(id){
       var el = document.getElementById(id);
       if (el) el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', renderOnePager);
     });
