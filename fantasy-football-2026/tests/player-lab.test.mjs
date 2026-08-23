@@ -42,7 +42,7 @@ test("keeps the draft board compact and action-ready", () => {
   assert.match(html, /class="team-cell"/);
   assert.match(html, /colspan="7"/);
   assert.match(html, /#p-lab-rankings \.lab-table th:last-child/);
-  assert.match(html, /isDrafted \? 'Drafted' : 'Draft'/);
+  assert.match(html, /drafted \? 'Drafted' : 'Draft'/);
 });
 
 test("keeps the merged data contracts intact", () => {
@@ -122,4 +122,38 @@ test("keeps the draft queue ordered and persistent", () => {
   assert.match(html, /class="queue-rank"/);
   assert.match(html, /next-up/);
   assert.match(html, /queueKeys\.splice\(to, 0, queueKeys\.splice\(from, 1\)\[0\]\)/);
+});
+
+test("keeps draft-day interactions off the O(n^2) path", () => {
+  // board/queue lookups must go through the key index, not linear scans
+  assert.match(html, /function indexBoard/);
+  assert.match(html, /boardByKey\[playerKey\(row\)\] = row/);
+  assert.doesNotMatch(html, /board\.find\(function\(row\)\{ return playerKey\(row\)/);
+  assert.doesNotMatch(html, /board\.some\(function\(row\)\{ return playerKey\(row\)/);
+  // membership checks are set-backed
+  assert.match(html, /function isDrafted\(key\)\{ return draftedSet\[key\] === true; \}/);
+  assert.match(html, /function isQueued\(key\)\{ return queuedSet\[key\] === true; \}/);
+  assert.match(html, /function syncDraftSets/);
+  // toggles patch a single row instead of rebuilding the whole board
+  assert.match(html, /function applyRowChange/);
+  assert.match(html, /function updateRowState/);
+  assert.match(html, /data-row-key=/);
+  // static cells are memoised per player
+  assert.match(html, /row\.staticCells == null/);
+});
+
+test("shows comparisons and the queue without leaving the board", () => {
+  assert.match(html, /id="lab-rail"/);
+  assert.match(html, /class="lab-workspace"/);
+  assert.match(html, /function renderCompareRail/);
+  assert.match(html, /function renderQueueRail/);
+  assert.match(html, /id="rail-compare"/);
+  assert.match(html, /id="rail-queue"/);
+  assert.match(html, /var RAIL_ROWS/);
+  assert.match(html, /data-rail-draft=/);
+  assert.match(html, /data-drop-compare=/);
+  // the rail must not be clipped by the global table min-width
+  assert.match(html, /\.rail-matrix\{ width:100%; min-width:0;/);
+  // and must stay out of the printed one-pager
+  assert.match(html, /@media print\{ \.lab-rail\{ display:none !important; \} \}/);
 });

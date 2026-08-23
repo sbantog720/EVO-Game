@@ -727,6 +727,54 @@
   .op-inj.q{ background:#fbbf24; } .op-inj.out{ background:#f87171; }
   .op-empty{ color:var(--dim); font-style:italic; font-size:.7rem; padding:3px 0; }
 
+  /* ================= Draft-day rail: compare + queue at a glance ================= */
+  .lab-workspace{ display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:14px; align-items:start; }
+  .lab-main{ min-width:0; }
+  .lab-rail{ position:sticky; top:72px; display:grid; gap:10px; min-width:0; max-height:calc(100vh - 88px); overflow:auto; }
+  .rail-block{ min-width:0; border:1px solid var(--rule-2); border-radius:16px; background:rgba(255,255,255,.04); padding:13px; }
+  .rail-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  .rail-head h3{ margin:0; color:var(--bone); font:800 .78rem var(--ui); letter-spacing:.03em; text-transform:uppercase; }
+  .rail-count{ display:inline-grid; place-items:center; min-width:18px; height:18px; padding:0 5px; border-radius:6px;
+    background:rgba(163,230,53,.18); color:var(--lime); font:800 .62rem var(--data); }
+  .rail-clear{ border:1px solid var(--rule-2); border-radius:999px; background:transparent; color:var(--dim);
+    padding:4px 9px; font:700 .6rem var(--ui); cursor:pointer; }
+  .rail-clear:hover{ border-color:var(--lime); color:var(--lime); }
+  .rail-hint{ margin:0; color:var(--dim); font-size:.7rem; line-height:1.55; }
+  .rail-hint b{ color:var(--bone); }
+  /* compare matrix: players as columns so differences read across one row */
+  .rail-matrix{ width:100%; min-width:0; table-layout:fixed; border-collapse:collapse; font-size:.66rem; }
+  .rail-matrix th,.rail-matrix td{ padding:5px 3px; text-align:right; border-top:1px solid rgba(255,255,255,.06); overflow:hidden; text-overflow:ellipsis; }
+  .rail-matrix th:first-child,.rail-matrix td:first-child{ width:58px; }
+  .rail-matrix thead th{ border-top:0; padding-bottom:7px; }
+  .rail-matrix th:first-child,.rail-matrix td:first-child{ text-align:left; color:var(--dim); font-weight:600; white-space:nowrap; }
+  .rail-player{ display:block; color:var(--bone); font:800 .68rem var(--ui); line-height:1.2; overflow-wrap:anywhere; }
+  .rail-player small{ display:block; color:var(--dim); font:600 .55rem var(--data); letter-spacing:.03em; margin-top:2px; overflow-wrap:anywhere; }
+  .rail-matrix td{ color:var(--bone); font-family:var(--data); }
+  .rail-matrix td.win{ color:var(--lime); font-weight:800; }
+  .rail-drop{ border:1px solid var(--rule-2); border-radius:999px; background:transparent; color:var(--dim);
+    width:18px; height:18px; padding:0; font-size:.6rem; line-height:1; cursor:pointer; margin-top:4px; }
+  .rail-drop:hover{ border-color:#f87171; color:#f87171; }
+  .rail-verdict{ margin:10px 0 0; padding-top:9px; border-top:1px solid var(--rule); color:var(--dim); font-size:.68rem; line-height:1.5; }
+  .rail-verdict b{ color:var(--lime); }
+  .rail-queue{ list-style:none; margin:0; padding:0; display:grid; gap:5px; }
+  .rail-queue li{ display:grid; grid-template-columns:18px 1fr auto; gap:7px; align-items:center;
+    border:1px solid var(--rule); border-radius:9px; padding:6px 8px; font-size:.7rem; color:var(--bone); }
+  .rail-queue li.up-next{ border-color:var(--lime); background:rgba(163,230,53,.1); }
+  .rail-queue .rq-rank{ display:grid; place-items:center; width:18px; height:18px; border-radius:5px;
+    background:rgba(96,165,250,.2); color:#bfdbfe; font:800 .6rem var(--data); }
+  .rail-queue li.up-next .rq-rank{ background:var(--lime); color:#0b0f0c; }
+  .rail-queue .rq-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rail-queue .rq-name small{ color:var(--dim); margin-left:4px; }
+  .rail-queue button{ border:1px solid var(--rule-2); border-radius:999px; background:transparent; color:var(--dim);
+    padding:3px 7px; font:700 .58rem var(--ui); cursor:pointer; }
+  .rail-queue button:hover{ border-color:var(--lime); color:var(--lime); }
+  @media (max-width:1180px){
+    .lab-workspace{ grid-template-columns:1fr; }
+    .lab-rail{ position:static; max-height:none; grid-template-columns:1fr 1fr; display:grid; }
+  }
+  @media (max-width:720px){ .lab-rail{ grid-template-columns:1fr; } }
+  @media print{ .lab-rail{ display:none !important; } }
+
   /* ================= Injury freshness banner ================= */
   .injury-freshness{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
     border:1px solid var(--rule-2); border-left-width:4px; border-radius:14px; padding:13px 16px; margin-bottom:14px; background:rgba(255,255,255,.035); }
@@ -2060,6 +2108,8 @@
     </div>
 
     <div class="panel active" id="p-lab-rankings" role="tabpanel">
+     <div class="lab-workspace">
+      <div class="lab-main">
       <div class="lab-toolbar">
         <input class="lab-control" id="lab-search" type="search" placeholder="Search player or team…" aria-label="Search players">
         <select class="lab-control" id="lab-position" aria-label="Filter by position">
@@ -2084,6 +2134,24 @@
       </div>
       <p class="lab-status" id="lab-status" aria-live="polite"></p>
       <div class="provenance"><strong>*Method note:</strong> expert ranks stay first; other rostered players follow by Sleeper PPR projection and ADP. Free agents are hidden. <strong>Late-round targets</strong> starts near pick 96 and includes useful backups, later QBs, kickers, and defenses. Board PPR is modeled.</div>
+      </div>
+      <aside class="lab-rail" id="lab-rail" aria-label="Draft-day compare and queue rail">
+        <section class="rail-block">
+          <div class="rail-head">
+            <h3>Compare <span class="rail-count" id="rail-compare-count">0</span></h3>
+            <button class="rail-clear" id="rail-compare-clear" type="button">Clear</button>
+          </div>
+          <div id="rail-compare"><p class="rail-hint">Hit <b>Compare</b> on any row — up to three players line up here without leaving the board.</p></div>
+        </section>
+        <section class="rail-block">
+          <div class="rail-head">
+            <h3>Queue <span class="rail-count" id="rail-queue-count">0</span></h3>
+            <button class="rail-clear" id="rail-queue-jump" type="button">Top of board</button>
+          </div>
+          <ol class="rail-queue" id="rail-queue"><li class="rail-hint">Nothing queued yet. <b>Queue</b> the players you want next.</li></ol>
+        </section>
+      </aside>
+     </div>
     </div>
 
     <div class="panel" id="p-lab-compare" role="tabpanel">
@@ -2327,6 +2395,9 @@
     var injuries = [];
     var injuryFeedUpdated = '';
     var allProjections = [];
+    var boardByKey = Object.create(null);
+    var draftedSet = Object.create(null);
+    var queuedSet = Object.create(null);
     var depthPlayers = [];
     var draftedKeys = [];
     var queueKeys = [];
@@ -2360,6 +2431,19 @@
       return isNaN(date.getTime()) ? input : date.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
     }
     function hasKey(list, key){ return list.indexOf(key) !== -1; }
+    function isDrafted(key){ return draftedSet[key] === true; }
+    function isQueued(key){ return queuedSet[key] === true; }
+    function syncDraftSets(){
+      draftedSet = Object.create(null);
+      queuedSet = Object.create(null);
+      draftedKeys.forEach(function(key){ draftedSet[key] = true; });
+      queueKeys.forEach(function(key){ queuedSet[key] = true; });
+    }
+    function rowForKey(key){ return boardByKey[key] || null; }
+    function indexBoard(){
+      boardByKey = Object.create(null);
+      board.forEach(function(row){ boardByKey[playerKey(row)] = row; });
+    }
     function removeKey(list, key){ return list.filter(function(item){ return item !== key; }); }
     function loadDraftState(){
       try {
@@ -2370,6 +2454,7 @@
         draftedKeys = [];
         queueKeys = [];
       }
+      syncDraftSets();
     }
     function saveDraftState(){
       try { localStorage.setItem(draftStateKey, JSON.stringify({ drafted:draftedKeys, queue:queueKeys })); } catch (error) {}
@@ -2423,7 +2508,7 @@
       var pool = document.getElementById('lab-pool').value;
       var availability = document.getElementById('lab-availability').value;
       var rows = board.filter(function(row){
-        var drafted = hasKey(draftedKeys, playerKey(row));
+        var drafted = isDrafted(playerKey(row));
         var poolMatch = !pool || (pool === 'late' ? isLateRoundTarget(row) : row.boardTier === pool);
         return (!position || row.position === position) && poolMatch &&
           (availability === 'all' || (availability === 'drafted' ? drafted : !drafted)) &&
@@ -2434,28 +2519,88 @@
       body.innerHTML = rows.map(function(row){
         var isSelected = selected.indexOf(row) !== -1;
         var key = playerKey(row);
-        var isQueued = hasKey(queueKeys, key);
-        var isDrafted = hasKey(draftedKeys, key);
-        var team = row.team || row.projection && row.projection.team || 'FA';
-        var depth = row.depthLabel || depthLabelFor(row.projection || row) || '—';
-        return '<tr' + (isDrafted ? ' class="is-drafted"' : '') + '>' +
-          '<td class="rank">' + row.overallRank + '</td>' +
-          '<td><span class="lab-player">' + esc(row.name) + '</span><span class="lab-note" title="' + esc(row.note) + '">' + esc(row.note) + '</span></td>' +
-          '<td><span class="pos-badge p-' + esc(row.position) + '">' + esc(row.position) + row.positionRank + '</span></td>' +
-          '<td><span class="team-cell"><strong>' + esc(team) + '</strong><small>' + esc(depth) + '</small></span></td>' +
-          '<td>' + number(row.ppr_projected_points) + '</td>' +
+        var queued = isQueued(key);
+        var drafted = isDrafted(key);
+        // The first five cells never change once the board is built, so escape
+        // and stringify them once per player instead of on every re-render.
+        if (row.staticCells == null) {
+          var team = row.team || row.projection && row.projection.team || 'FA';
+          var depth = row.depthLabel || depthLabelFor(row.projection || row) || '—';
+          var note = esc(row.note);
+          row.staticCells =
+            '<td class="rank">' + row.overallRank + '</td>' +
+            '<td><span class="lab-player">' + esc(row.name) + '</span><span class="lab-note" title="' + note + '">' + note + '</span></td>' +
+            '<td><span class="pos-badge p-' + esc(row.position) + '">' + esc(row.position) + row.positionRank + '</span></td>' +
+            '<td><span class="team-cell"><strong>' + esc(team) + '</strong><small>' + esc(depth) + '</small></span></td>' +
+            '<td>' + number(row.ppr_projected_points) + '</td>';
+          row.escKey = esc(key);
+        }
+        return '<tr data-row-key="' + row.escKey + '"' + (drafted ? ' class="is-drafted"' : '') + '>' +
+          row.staticCells +
           '<td>' + number(projectionFor(row)) + '</td>' +
-          '<td><div class="row-actions"><button class="compare-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + isSelected + '">' + (isSelected ? 'Comparing' : 'Compare') + '</button><button class="queue-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + isQueued + '">' + (isQueued ? 'Queued' : 'Queue') + '</button><button class="draft-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + isDrafted + '">' + (isDrafted ? 'Drafted' : 'Draft') + '</button></div></td>' +
+          '<td><div class="row-actions"><button class="compare-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + isSelected + '">' + (isSelected ? 'Comparing' : 'Compare') + '</button><button class="queue-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + queued + '">' + (queued ? 'Queued' : 'Queue') + '</button><button class="draft-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + drafted + '">' + (drafted ? 'Drafted' : 'Draft') + '</button></div></td>' +
         '</tr>';
       }).join('') || '<tr><td colspan="7">No players match those filters.</td></tr>';
       document.getElementById('lab-status').innerHTML = '<strong>' + rows.length + '</strong> players shown · <strong>' + selected.length + '</strong> selected for comparison';
     }
 
+    function rowNodeFor(key){
+      return body.querySelector('tr[data-row-key="' + key + '"]');
+    }
+    function updateRowState(key){
+      var tr = rowNodeFor(key);
+      if (!tr) return null;
+      var row = boardByKey[key];
+      var drafted = isDrafted(key), queued = isQueued(key);
+      tr.classList.toggle('is-drafted', drafted);
+      var compareBtn = tr.querySelector('.compare-toggle');
+      var queueBtn = tr.querySelector('.queue-toggle');
+      var draftBtn = tr.querySelector('.draft-toggle');
+      if (compareBtn) {
+        var picked = row ? selected.indexOf(row) !== -1 : false;
+        compareBtn.setAttribute('aria-pressed', String(picked));
+        compareBtn.textContent = picked ? 'Comparing' : 'Compare';
+      }
+      if (queueBtn) {
+        queueBtn.setAttribute('aria-pressed', String(queued));
+        queueBtn.textContent = queued ? 'Queued' : 'Queue';
+      }
+      if (draftBtn) {
+        draftBtn.setAttribute('aria-pressed', String(drafted));
+        draftBtn.textContent = drafted ? 'Drafted' : 'Draft';
+      }
+      return tr;
+    }
+    function rowPassesAvailability(key){
+      var mode = document.getElementById('lab-availability').value;
+      if (mode === 'all') return true;
+      return mode === 'drafted' ? isDrafted(key) : !isDrafted(key);
+    }
+    function updateShownCount(delta){
+      var el = document.getElementById('lab-status');
+      var match = el.textContent.match(/^(\d+)/);
+      var shown = match ? Number(match[1]) + delta : null;
+      el.innerHTML = '<strong>' + (shown == null ? body.querySelectorAll('tr[data-row-key]').length : shown) +
+        '</strong> players shown · <strong>' + selected.length + '</strong> selected for comparison';
+    }
+    // Returns true when the row could be updated in place, false when a full
+    // re-render is needed (the row must appear/disappear under the active filter).
+    function applyRowChange(key){
+      var tr = rowNodeFor(key);
+      var passes = rowPassesAvailability(key);
+      if (tr && !passes) { tr.remove(); updateShownCount(-1); return true; }
+      if (!tr && passes) return false;
+      updateRowState(key);
+      updateShownCount(0);
+      return true;
+    }
+
     function renderDraftRoom(){
-      var validDrafted = draftedKeys.filter(function(key){ return board.some(function(row){ return playerKey(row) === key; }); });
-      var queuedRows = queueKeys.map(function(key){ return board.find(function(row){ return playerKey(row) === key; }); }).filter(Boolean);
+      var validDrafted = draftedKeys.filter(function(key){ return !!boardByKey[key]; });
+      var queuedRows = queueKeys.map(function(key){ return boardByKey[key]; }).filter(Boolean);
       draftedKeys = validDrafted;
       queueKeys = queuedRows.map(playerKey);
+      syncDraftSets();
       document.getElementById('available-count').textContent = board.length - draftedKeys.length;
       document.getElementById('queue-count').textContent = queuedRows.length;
       document.getElementById('drafted-count').textContent = draftedKeys.length;
@@ -2470,7 +2615,66 @@
           '<button type="button" data-remove-queue="' + esc(key) + '" aria-label="Remove ' + esc(row.name) + ' from queue">×</button>' +
         '</span>';
       }).join('') : '<span class="queue-chip">Queue is empty</span>';
+      renderQueueRail();
       saveDraftState();
+    }
+
+    // Compact head-to-head for the always-visible rail: players as columns so a
+    // single row reads across, with the best value in each row highlighted.
+    var RAIL_ROWS = [
+      { label:'Proj PPR', get:function(row){ return Number(row.projection && row.projection.stats && row.projection.stats.pts_ppr); } },
+      { label:'Board', get:function(row){ return Number(row.ppr_projected_points); } },
+      { label:'ADP', get:function(row){ var v = Number(row.projection && row.projection.stats && row.projection.stats.adp_ppr); return v < 900 ? v : NaN; }, low:true },
+      { label:'Overall', get:function(row){ return hasBoardRank(row) ? Number(row.overallRank) : NaN; }, low:true, rank:true },
+      { label:'2025 pts', get:function(row){ return Number(latestFor(row)); } }
+    ];
+    function renderCompareRail(){
+      var host = document.getElementById('rail-compare');
+      if (!host) return;
+      document.getElementById('rail-compare-count').textContent = selected.length;
+      if (!selected.length) {
+        host.innerHTML = '<p class="rail-hint">Hit <b>Compare</b> on any row — up to three players line up here without leaving the board.</p>';
+        return;
+      }
+      var head = '<thead><tr><th></th>' + selected.map(function(row){
+        var injury = row.projection && row.projection.injury_status;
+        return '<th><span class="rail-player">' + esc(row.name.split(' ').slice(-1)[0]) +
+          '<small>' + esc(positionText(row)) + ' · ' + esc(row.team || '—') + (injury ? ' · ' + esc(injury.slice(0,4)) : '') + '</small></span>' +
+          '<button class="rail-drop" type="button" data-drop-compare="' + esc(playerKey(row)) + '" aria-label="Remove ' + esc(row.name) + ' from comparison">×</button></th>';
+      }).join('') + '</tr></thead>';
+      var body = '<tbody>' + RAIL_ROWS.map(function(metric){
+        var values = selected.map(metric.get);
+        var finite = values.filter(function(v){ return Number.isFinite(v); });
+        var best = finite.length ? (metric.low ? Math.min.apply(null, finite) : Math.max.apply(null, finite)) : null;
+        return '<tr><td>' + esc(metric.label) + '</td>' + values.map(function(v){
+          var win = finite.length > 1 && Number.isFinite(v) && v === best;
+          var text = Number.isFinite(v) ? (metric.rank ? '#' + number(v) : number(v)) : '—';
+          return '<td' + (win ? ' class="win"' : '') + '>' + text + '</td>';
+        }).join('') + '</tr>';
+      }).join('') + '</tbody>';
+      var verdict = '';
+      if (selected.length > 1) {
+        var sorted = selected.slice().sort(function(a, b){ return projectedPpr(b) - projectedPpr(a); });
+        var gap = projectedPpr(sorted[0]) - projectedPpr(sorted[1]);
+        verdict = '<p class="rail-verdict">Projection edge <b>' + esc(sorted[0].name) + '</b> by <b>' + number(gap) + '</b> PPR pts.</p>';
+      } else {
+        verdict = '<p class="rail-verdict">Add another player for a head-to-head.</p>';
+      }
+      host.innerHTML = '<table class="rail-matrix">' + head + body + '</table>' + verdict;
+    }
+    function renderQueueRail(){
+      var host = document.getElementById('rail-queue');
+      if (!host) return;
+      var rows = queueKeys.map(function(key){ return boardByKey[key]; }).filter(Boolean);
+      document.getElementById('rail-queue-count').textContent = rows.length;
+      host.innerHTML = rows.length ? rows.map(function(row, index){
+        var key = playerKey(row);
+        return '<li' + (index === 0 ? ' class="up-next"' : '') + '>' +
+          '<span class="rq-rank">' + (index + 1) + '</span>' +
+          '<span class="rq-name">' + esc(row.name) + '<small>' + esc(positionText(row)) + ' · ' + esc(row.team || '—') + '</small></span>' +
+          '<button type="button" data-rail-draft="' + esc(key) + '">Drafted</button>' +
+        '</li>';
+      }).join('') : '<li class="rail-hint">Nothing queued yet. <b>Queue</b> the players you want next.</li>';
     }
 
     function compareMetrics(row){
@@ -2536,8 +2740,10 @@
         host.innerHTML = '<div class="lab-empty">Choose two or three players above, or add them from Rankings.</div>';
         matrix.innerHTML = '';
         summary.innerHTML = '';
+        renderCompareRail();
         return;
       }
+      renderCompareRail();
       host.innerHTML = selected.map(function(row){
         var stats = row.projection ? row.projection.stats : {};
         var injury = row.projection && row.projection.injury_status ? row.projection.injury_status : 'No injury flag';
@@ -2588,7 +2794,7 @@
       return { outlook:'Short-term flag — no confirmed return date', confidence:'Low · feed status only', tone:'medium' };
     }
     function rankedRowFor(player){
-      return board.find(function(row){ return row.position === player.position && norm(row.name) === norm(player.name); });
+      return boardByKey[player.position + ':' + norm(player.name)] || null;
     }
     function renderInjuries(){
       var query = norm(document.getElementById('injury-search').value);
@@ -2636,7 +2842,7 @@
         return '<article class="depth-pos-card"><h3>' + esc(pos) + '<span>' + esc(team) + ' depth</span></h3>' + rows.map(function(player, index){
           var order = player.display_depth_order || player.depth_chart_order || (index + 1);
           var injury = player.injury_status ? ' · ' + player.injury_status : '';
-          var rank = board.find(function(row){ return playerKey(row) === player.position + ':' + norm(player.name); });
+          var rank = boardByKey[player.position + ':' + norm(player.name)];
           var confidence = player.depth_confidence === 'reported' ? 'Reported order' : 'Projection fallback';
           return '<div class="depth-player"><span class="depth-order">' + esc(order) + '</span><div><strong>' + esc(player.name) + '</strong><small>' + esc(player.depth_chart_position || pos) + injury + (rank ? ' · Overall ' + rank.overallRank : '') + ' · ' + confidence + '</small></div><div class="depth-points">' + number(player.stats && player.stats.pts_ppr) + '<small>PPR</small></div></div>';
         }).join('') + '</article>';
@@ -2706,7 +2912,7 @@
             if (!pick.player) return '<div class="op-slot"><span class="op-tag op-dim">' + esc(pick.slot) + '</span><span class="op-empty">No projected option</span><span class="op-pts">&mdash;</span></div>';
             var player = pick.player;
             var align = player.depth_chart_position && player.depth_chart_position !== pick.pos ? '<small>' + esc(player.depth_chart_position) + '</small>' : '';
-            var rank = board.find(function(row){ return playerKey(row) === player.position + ':' + norm(player.name); });
+            var rank = boardByKey[player.position + ':' + norm(player.name)];
             var overall = rank && hasBoardRank(rank) ? '<small>#' + esc(rank.overallRank) + '</small>' : '';
             return '<div class="op-slot">' +
               '<span class="op-tag op-' + esc(pick.pos.toLowerCase()) + '">' + esc(pick.slot) + '</span>' +
@@ -2942,9 +3148,14 @@
           depthPlayers.push(player);
         });
       });
+      // Track keys already on the board in a set; scanning the growing array
+      // per projection made this the slowest step of the initial load.
+      var boardKeySeen = Object.create(null);
+      board.forEach(function(row){ boardKeySeen[playerKey(row)] = true; });
       rosteredProjections.forEach(function(player){
         var key = player.position + ':' + norm(player.name);
-        if (board.some(function(row){ return playerKey(row) === key; })) return;
+        if (boardKeySeen[key]) return;
+        boardKeySeen[key] = true;
         var depthLabel = depthLabelFor(player);
         board.push({
           playerKey:key,
@@ -2974,6 +3185,7 @@
       var expertMaxRank = expertBoard.reduce(function(max, row){ return Math.max(max, Number(row.overallRank) || 0); }, 0);
       depthBoard.forEach(function(row, index){ row.overallRank = expertMaxRank + index + 1; });
       board = expertBoard.concat(depthBoard);
+      indexBoard();
       comparePool = board.slice();
       var lateRoundCount = board.filter(isLateRoundTarget).length;
       injuries = rosteredProjections.filter(function(player){ return player.injury_status; }).sort(function(a, b){
@@ -3046,6 +3258,42 @@
     });
     document.getElementById('onepager-print').addEventListener('click', function(){ window.print(); });
     document.getElementById('injury-refresh').addEventListener('click', attemptLiveInjuryRefresh);
+
+    // Rail interactions: drop a comparison, mark a queued player drafted, or
+    // jump back to the top of the board — all without leaving Rankings.
+    document.getElementById('rail-compare').addEventListener('click', function(e){
+      var drop = e.target.closest('[data-drop-compare]');
+      if (!drop) return;
+      var row = boardByKey[drop.dataset.dropCompare];
+      var index = row ? selected.indexOf(row) : -1;
+      if (index === -1) return;
+      selected.splice(index, 1);
+      renderCompare();
+      updateRowState(drop.dataset.dropCompare);
+      updateShownCount(0);
+    });
+    document.getElementById('rail-compare-clear').addEventListener('click', function(){
+      var keys = selected.map(playerKey);
+      selected = [];
+      renderCompare();
+      keys.forEach(updateRowState);
+      updateShownCount(0);
+    });
+    document.getElementById('rail-queue').addEventListener('click', function(e){
+      var button = e.target.closest('[data-rail-draft]');
+      if (!button) return;
+      var key = button.dataset.railDraft;
+      if (!isDrafted(key)) {
+        draftedKeys.push(key);
+        queueKeys = removeKey(queueKeys, key);
+      }
+      renderDraftRoom();
+      if (!applyRowChange(key)) renderBoard();
+    });
+    document.getElementById('rail-queue-jump').addEventListener('click', function(){
+      var wrap = document.querySelector('#p-lab-rankings .lab-table-wrap');
+      if (wrap) wrap.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
     document.querySelectorAll('.compare-search').forEach(function(input){
       input.setAttribute('aria-expanded', 'false');
       input.addEventListener('focus', function(){ renderCompareSuggestions(input); });
@@ -3111,7 +3359,7 @@
     body.addEventListener('click', function(e){
       var button = e.target.closest('.compare-toggle,.queue-toggle,.draft-toggle');
       if (!button) return;
-      var row = board.find(function(item){ return playerKey(item) === button.dataset.playerKey; });
+      var row = rowForKey(button.dataset.playerKey);
       if (!row) return;
       var key = playerKey(row);
       if (button.classList.contains('compare-toggle')) {
@@ -3123,20 +3371,28 @@
           return;
         }
         renderCompare();
+        updateRowState(key);
+        updateShownCount(0);
+        return;
       } else if (button.classList.contains('queue-toggle')) {
-        if (hasKey(draftedKeys, key)) {
+        if (isDrafted(key)) {
           document.getElementById('lab-status').innerHTML = '<strong>' + esc(row.name) + ' is drafted.</strong> Mark the player available before adding them to your queue.';
           return;
         }
-        queueKeys = hasKey(queueKeys, key) ? removeKey(queueKeys, key) : queueKeys.concat(key);
+        queueKeys = isQueued(key) ? removeKey(queueKeys, key) : queueKeys.concat(key);
         renderDraftRoom();
+        // Queueing never changes which rows the filter shows, so the row can
+        // always be patched in place instead of rebuilding the whole board.
+        updateRowState(key);
+        return;
       } else {
-        if (hasKey(draftedKeys, key)) draftedKeys = removeKey(draftedKeys, key);
+        if (isDrafted(key)) draftedKeys = removeKey(draftedKeys, key);
         else {
           draftedKeys.push(key);
           queueKeys = removeKey(queueKeys, key);
         }
         renderDraftRoom();
+        if (applyRowChange(key)) return;
       }
       renderBoard();
     });
