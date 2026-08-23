@@ -759,6 +759,7 @@
   .rail-queue{ list-style:none; margin:0; padding:0; display:grid; gap:5px; }
   .rail-queue li{ display:grid; grid-template-columns:18px 1fr auto; gap:7px; align-items:center;
     border:1px solid var(--rule); border-radius:9px; padding:6px 8px; font-size:.7rem; color:var(--bone); }
+  .rail-queue li.rail-hint{ display:block; border:0; padding:0; }
   .rail-queue li.up-next{ border-color:var(--lime); background:rgba(163,230,53,.1); }
   .rail-queue .rq-rank{ display:grid; place-items:center; width:18px; height:18px; border-radius:5px;
     background:rgba(96,165,250,.2); color:#bfdbfe; font:800 .6rem var(--data); }
@@ -773,6 +774,95 @@
     .lab-rail{ position:static; max-height:none; grid-template-columns:1fr 1fr; display:grid; }
   }
   @media (max-width:720px){ .lab-rail{ grid-template-columns:1fr; } }
+
+  /* ================= Portrait / phone reformat =================
+     Draft day is mostly done one-handed on a phone. Below 780px the board
+     stops being a 690px-wide table and becomes stacked cards, the compare
+     rail moves above a board that scrolls inside itself (so comparisons stay
+     on screen while you hunt), and the page chrome shrinks out of the way. */
+  @media (max-width:780px){
+    .lab-workspace{ gap:10px; }
+    /* compare + queue sit above the board and stay put while it scrolls */
+    .lab-rail{ order:-1; position:static; max-height:none; grid-template-columns:1fr; gap:8px; }
+    .rail-block{ padding:10px; }
+    .rail-head{ margin-bottom:7px; }
+    .rail-head h3{ font-size:.72rem; }
+    .lab-rail .rail-hint{ font-size:.66rem; }
+    .rail-queue{ max-height:132px; overflow:auto; }
+
+    /* toolbar: search full width, the four selects two-up */
+    .lab-toolbar{ display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .lab-toolbar #lab-search{ grid-column:1/-1; }
+    .lab-control{ min-width:0; padding:9px 10px; font-size:.78rem; }
+
+    /* draft room bar stacks: counts, queue strip, reset */
+    .draft-room-bar{ gap:7px; padding:9px 10px; }
+    .draft-room-counts{ font-size:.7rem; }
+
+    /* board becomes cards — no sideways scrolling for the action buttons */
+    .lab-table-wrap{ max-height:56vh; border-radius:14px; }
+    .lab-table{ min-width:0; display:block; }
+    .lab-table thead{ display:none; }
+    .lab-table tbody{ display:block; }
+    .lab-table tr{ display:grid; align-items:center; gap:3px 8px;
+      grid-template-columns:24px auto minmax(0,1fr) auto;
+      grid-template-areas:'rank name name proj' 'rank pos team board' 'acts acts acts acts';
+      padding:8px 11px; border-bottom:1px solid var(--rule); }
+    .lab-table tr.is-drafted{ opacity:.45; }
+    .lab-table td{ display:block; border:0; padding:0; }
+    .lab-table td[data-cell="Ovr"]{ grid-area:rank; align-self:start; padding-top:2px; font-family:var(--data); font-size:.7rem; color:var(--dim); }
+    .lab-table td[data-cell="Player"]{ grid-area:name; min-width:0; }
+    .lab-table td[data-cell="Player"] .lab-player{ display:block; font-size:.86rem; line-height:1.25; }
+    .lab-table td[data-cell="Player"] .lab-note{ display:none; }
+    .lab-table td[data-cell="Proj"]{ grid-area:proj; text-align:right; font-family:var(--data);
+      font-size:.92rem; font-weight:800; color:var(--bone); }
+    .lab-table td[data-cell="Pos"]{ grid-area:pos; }
+    .lab-table td[data-cell="Team"]{ grid-area:team; }
+    .lab-table td[data-cell="Team"] .team-cell{ display:flex; flex-direction:row; gap:5px; align-items:baseline; min-width:0; }
+    .lab-table td[data-cell="Team"] .team-cell strong::after{ content:" ·"; color:var(--muted); }
+    .lab-table td[data-cell="Board"]{ grid-area:board; text-align:right; font-family:var(--data); font-size:.64rem; color:var(--dim); }
+    .lab-table td[data-cell="Board"]::before{ content:'Board '; color:var(--muted); }
+    .lab-table td[data-cell="Actions"]{ grid-area:acts; margin-top:5px; }
+    .lab-table td[data-cell="Actions"] .row-actions{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; }
+    .lab-table td[data-cell="Actions"] .row-actions button{ width:100%; padding:8px 4px; font-size:.68rem; }
+    .lab-table tr:has(td[colspan]){ display:block; }
+    .lab-table td[colspan]{ padding:14px; text-align:center; color:var(--dim); }
+
+    /* tabs become a swipeable strip instead of overflowing */
+    .tabs{ display:flex; flex-wrap:nowrap; overflow-x:auto; gap:5px;
+      scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
+    .tabs::-webkit-scrollbar{ height:3px; }
+    .tab{ flex:none; scroll-snap-align:start; white-space:nowrap; }
+
+    /* trim the reading matter that pushes the board below the fold */
+    #p-lab-rankings .provenance,
+    #p-lab-onepager .provenance,
+    #p-lab-injuries .provenance,
+    #p-lab-depth .provenance{ font-size:.64rem; line-height:1.5; }
+    .lab-card{ padding:12px; }
+    .lab-counts{ grid-template-columns:1fr 1fr; gap:8px; }
+
+    /* one-pager stays readable but tighter */
+    .onepager-toolbar{ display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .onepager-toolbar #onepager-search{ grid-column:1/-1; }
+    .onepager-print{ grid-column:1/-1; }
+    .injury-freshness{ padding:11px 12px; }
+    .fresh-actions{ width:100%; }
+
+    /* grid children default to min-width:auto, which lets long content push
+       the page wider than the viewport — pin the known offenders to 0 */
+    .team-columns > *, .team-report-head > *, .lab-workspace > *, .league-hero > *{ min-width:0; }
+    .team-section ul{ padding-left:16px; }
+    /* the global table{min-width:560px} pushes these past a phone viewport */
+    .team-mini-table, .league-table{ min-width:0; font-size:.72rem; }
+    .team-mini-table th, .team-mini-table td, .league-table th, .league-table td{ padding:5px 4px; }
+  }
+  @media (max-width:360px){
+    .lab-toolbar{ grid-template-columns:1fr; }
+    .onepager-toolbar{ grid-template-columns:1fr; }
+    .lab-counts{ grid-template-columns:1fr 1fr; }
+    .lab-table td[data-cell="Actions"] .row-actions button{ font-size:.64rem; padding:8px 2px; }
+  }
   @media print{ .lab-rail{ display:none !important; } }
 
   /* ================= Injury freshness banner ================= */
@@ -872,7 +962,6 @@
     .sec-head .wrap{ margin-inline:12px; width:auto; }
     .sheet-heads{ grid-template-columns:1fr; gap:18px; }
     .sheet-col + .sheet-col{ border-left:0; border-top:1px solid var(--rule); padding:18px 0 0; }
-    .lab-toolbar{ grid-template-columns:1fr; }
     .compare-grid,.watch-grid,.tips-grid{ grid-template-columns:1fr; }
     .compare-builder,.injury-grid,.depth-team-grid{ grid-template-columns:1fr; }
     .depth-toolbar{ grid-template-columns:1fr; }
@@ -2131,6 +2220,7 @@
           <thead><tr><th>Ovr</th><th>Player</th><th>Pos</th><th>Team<br><small>Depth</small></th><th>Board PPR*</th><th id="lab-proj-label">Sleeper PPR</th><th>Draft actions</th></tr></thead>
           <tbody id="lab-rankings-body"><tr><td colspan="7">Loading merged data…</td></tr></tbody>
         </table>
+        <p class="board-more" id="board-more" hidden></p>
       </div>
       <p class="lab-status" id="lab-status" aria-live="polite"></p>
       <div class="provenance"><strong>*Method note:</strong> expert ranks stay first; other rostered players follow by Sleeper PPR projection and ADP. Free agents are hidden. <strong>Late-round targets</strong> starts near pick 96 and includes useful backups, later QBs, kickers, and defenses. Board PPR is modeled.</div>
@@ -2502,12 +2592,95 @@
       return false;
     }
 
+    // The board can hold ~590 rows. Painting them all costs about a second on
+    // a throttled phone, so rows go in as chunks: the first paints immediately
+    // and a sentinel below the table pulls the rest in as the user scrolls.
+    var BOARD_CHUNK = 60;
+    var boardFiltered = [];
+    var boardRendered = 0;
+    var boardObserver = null;
+
+    function boardRowHtml(row){
+      var key = playerKey(row);
+      var isSelected = selected.indexOf(row) !== -1;
+      var queued = isQueued(key);
+      var drafted = isDrafted(key);
+      // The first five cells never change once the board is built, so escape
+      // and stringify them once per player instead of on every re-render.
+      if (row.staticCells == null) {
+        var team = row.team || row.projection && row.projection.team || 'FA';
+        var depth = row.depthLabel || depthLabelFor(row.projection || row) || '—';
+        var note = esc(row.note);
+        row.staticCells =
+          '<td class="rank" data-cell="Ovr">' + row.overallRank + '</td>' +
+          '<td data-cell="Player"><span class="lab-player">' + esc(row.name) + '</span><span class="lab-note" title="' + note + '">' + note + '</span></td>' +
+          '<td data-cell="Pos"><span class="pos-badge p-' + esc(row.position) + '">' + esc(row.position) + row.positionRank + '</span></td>' +
+          '<td data-cell="Team"><span class="team-cell"><strong>' + esc(team) + '</strong><small>' + esc(depth) + '</small></span></td>' +
+          '<td data-cell="Board">' + number(row.ppr_projected_points) + '</td>';
+        row.escKey = esc(key);
+      }
+      return '<tr data-row-key="' + row.escKey + '"' + (drafted ? ' class="is-drafted"' : '') + '>' +
+        row.staticCells +
+        '<td data-cell="Proj">' + number(projectionFor(row)) + '</td>' +
+        '<td data-cell="Actions"><div class="row-actions"><button class="compare-toggle" type="button" data-player-key="' + row.escKey + '" aria-pressed="' + isSelected + '">' + (isSelected ? 'Comparing' : 'Compare') + '</button><button class="queue-toggle" type="button" data-player-key="' + row.escKey + '" aria-pressed="' + queued + '">' + (queued ? 'Queued' : 'Queue') + '</button><button class="draft-toggle" type="button" data-player-key="' + row.escKey + '" aria-pressed="' + drafted + '">' + (drafted ? 'Drafted' : 'Draft') + '</button></div></td>' +
+      '</tr>';
+    }
+
+    function boardStatusText(){
+      var shown = body.querySelectorAll('tr[data-row-key]').length;
+      var total = boardFiltered.length;
+      return '<strong>' + shown + '</strong>' + (shown < total ? ' of <strong>' + total + '</strong>' : '') +
+        ' players shown · <strong>' + selected.length + '</strong> selected for comparison';
+    }
+    function updateBoardStatus(){
+      document.getElementById('lab-status').innerHTML = boardStatusText();
+      var more = document.getElementById('board-more');
+      if (!more) return;
+      var remaining = boardFiltered.length - boardRendered;
+      more.textContent = remaining > 0 ? 'Loading ' + Math.min(BOARD_CHUNK, remaining) + ' more…' : '';
+      more.hidden = remaining <= 0;
+    }
+    function appendBoardChunk(){
+      if (boardRendered >= boardFiltered.length) { updateBoardStatus(); return; }
+      var slice = boardFiltered.slice(boardRendered, boardRendered + BOARD_CHUNK);
+      body.insertAdjacentHTML('beforeend', slice.map(boardRowHtml).join(''));
+      boardRendered += slice.length;
+      updateBoardStatus();
+    }
+    function boardScroller(){
+      return document.querySelector('#p-lab-rankings .lab-table-wrap');
+    }
+    // The rows scroll inside .lab-table-wrap, not the page, so the sentinel has
+    // to be observed against that element. One chunk may not be enough to push
+    // the sentinel back out of view, so keep topping up until it is.
+    function topUpBoard(){
+      var more = document.getElementById('board-more');
+      var wrap = boardScroller();
+      if (!more || !wrap || boardRendered >= boardFiltered.length) return;
+      appendBoardChunk();
+      requestAnimationFrame(function(){
+        if (boardRendered >= boardFiltered.length) return;
+        var sentinel = more.getBoundingClientRect();
+        var root = wrap.getBoundingClientRect();
+        if (sentinel.top < root.bottom + 400) topUpBoard();
+      });
+    }
+    function ensureBoardObserver(){
+      var more = document.getElementById('board-more');
+      var wrap = boardScroller();
+      if (!more || !wrap || boardObserver || typeof IntersectionObserver === 'undefined') return;
+      boardObserver = new IntersectionObserver(function(entries){
+        if (entries.some(function(entry){ return entry.isIntersecting; })) topUpBoard();
+      }, { root: wrap, rootMargin: '400px 0px' });
+      boardObserver.observe(more);
+    }
+
     function renderBoard(){
       var query = norm(document.getElementById('lab-search').value);
       var position = document.getElementById('lab-position').value;
       var pool = document.getElementById('lab-pool').value;
       var availability = document.getElementById('lab-availability').value;
-      var rows = board.filter(function(row){
+      boardFiltered = board.filter(function(row){
         var drafted = isDrafted(playerKey(row));
         var poolMatch = !pool || (pool === 'late' ? isLateRoundTarget(row) : row.boardTier === pool);
         return (!position || row.position === position) && poolMatch &&
@@ -2516,32 +2689,17 @@
       });
       document.getElementById('lab-proj-label').textContent =
         scoring === 'pts_half_ppr' ? 'Sleeper Half' : scoring === 'pts_std' ? 'Sleeper Std' : 'Sleeper PPR';
-      body.innerHTML = rows.map(function(row){
-        var isSelected = selected.indexOf(row) !== -1;
-        var key = playerKey(row);
-        var queued = isQueued(key);
-        var drafted = isDrafted(key);
-        // The first five cells never change once the board is built, so escape
-        // and stringify them once per player instead of on every re-render.
-        if (row.staticCells == null) {
-          var team = row.team || row.projection && row.projection.team || 'FA';
-          var depth = row.depthLabel || depthLabelFor(row.projection || row) || '—';
-          var note = esc(row.note);
-          row.staticCells =
-            '<td class="rank">' + row.overallRank + '</td>' +
-            '<td><span class="lab-player">' + esc(row.name) + '</span><span class="lab-note" title="' + note + '">' + note + '</span></td>' +
-            '<td><span class="pos-badge p-' + esc(row.position) + '">' + esc(row.position) + row.positionRank + '</span></td>' +
-            '<td><span class="team-cell"><strong>' + esc(team) + '</strong><small>' + esc(depth) + '</small></span></td>' +
-            '<td>' + number(row.ppr_projected_points) + '</td>';
-          row.escKey = esc(key);
-        }
-        return '<tr data-row-key="' + row.escKey + '"' + (drafted ? ' class="is-drafted"' : '') + '>' +
-          row.staticCells +
-          '<td>' + number(projectionFor(row)) + '</td>' +
-          '<td><div class="row-actions"><button class="compare-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + isSelected + '">' + (isSelected ? 'Comparing' : 'Compare') + '</button><button class="queue-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + queued + '">' + (queued ? 'Queued' : 'Queue') + '</button><button class="draft-toggle" type="button" data-player-key="' + esc(key) + '" aria-pressed="' + drafted + '">' + (drafted ? 'Drafted' : 'Draft') + '</button></div></td>' +
-        '</tr>';
-      }).join('') || '<tr><td colspan="7">No players match those filters.</td></tr>';
-      document.getElementById('lab-status').innerHTML = '<strong>' + rows.length + '</strong> players shown · <strong>' + selected.length + '</strong> selected for comparison';
+      boardRendered = 0;
+      body.innerHTML = '';
+      var scroller = boardScroller();
+      if (scroller) scroller.scrollTop = 0;
+      if (!boardFiltered.length) {
+        body.innerHTML = '<tr><td colspan="7">No players match those filters.</td></tr>';
+        updateBoardStatus();
+        return;
+      }
+      appendBoardChunk();
+      ensureBoardObserver();
     }
 
     function rowNodeFor(key){
@@ -2576,22 +2734,22 @@
       if (mode === 'all') return true;
       return mode === 'drafted' ? isDrafted(key) : !isDrafted(key);
     }
-    function updateShownCount(delta){
-      var el = document.getElementById('lab-status');
-      var match = el.textContent.match(/^(\d+)/);
-      var shown = match ? Number(match[1]) + delta : null;
-      el.innerHTML = '<strong>' + (shown == null ? body.querySelectorAll('tr[data-row-key]').length : shown) +
-        '</strong> players shown · <strong>' + selected.length + '</strong> selected for comparison';
-    }
+
     // Returns true when the row could be updated in place, false when a full
     // re-render is needed (the row must appear/disappear under the active filter).
     function applyRowChange(key){
       var tr = rowNodeFor(key);
       var passes = rowPassesAvailability(key);
-      if (tr && !passes) { tr.remove(); updateShownCount(-1); return true; }
+      if (tr && !passes) {
+        tr.remove();
+        var at = boardFiltered.indexOf(boardByKey[key]);
+        if (at !== -1) { boardFiltered.splice(at, 1); if (at < boardRendered) boardRendered--; }
+        updateBoardStatus();
+        return true;
+      }
       if (!tr && passes) return false;
       updateRowState(key);
-      updateShownCount(0);
+      updateBoardStatus();
       return true;
     }
 
@@ -3270,14 +3428,14 @@
       selected.splice(index, 1);
       renderCompare();
       updateRowState(drop.dataset.dropCompare);
-      updateShownCount(0);
+      updateBoardStatus();
     });
     document.getElementById('rail-compare-clear').addEventListener('click', function(){
       var keys = selected.map(playerKey);
       selected = [];
       renderCompare();
       keys.forEach(updateRowState);
-      updateShownCount(0);
+      updateBoardStatus();
     });
     document.getElementById('rail-queue').addEventListener('click', function(e){
       var button = e.target.closest('[data-rail-draft]');
@@ -3372,7 +3530,7 @@
         }
         renderCompare();
         updateRowState(key);
-        updateShownCount(0);
+        updateBoardStatus();
         return;
       } else if (button.classList.contains('queue-toggle')) {
         if (isDrafted(key)) {

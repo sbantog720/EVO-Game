@@ -157,3 +157,31 @@ test("shows comparisons and the queue without leaving the board", () => {
   // and must stay out of the printed one-pager
   assert.match(html, /@media print\{ \.lab-rail\{ display:none !important; \} \}/);
 });
+
+test("paints the board in chunks instead of all at once", () => {
+  assert.match(html, /var BOARD_CHUNK = \d+/);
+  assert.match(html, /function appendBoardChunk/);
+  assert.match(html, /function topUpBoard/);
+  assert.match(html, /id="board-more"/);
+  // the rows scroll inside .lab-table-wrap, so that must be the observer root
+  assert.match(html, /\{ root: wrap, rootMargin/);
+  assert.match(html, /function boardScroller/);
+  // filtering resets the window and the scroll position
+  assert.match(html, /scroller\.scrollTop = 0/);
+  assert.match(html, /boardRendered = 0/);
+});
+
+test("reformats the board for portrait without a sideways scroll", () => {
+  assert.match(html, /@media \(max-width:780px\)/);
+  // rows become cards laid out on an explicit grid
+  assert.match(html, /grid-template-areas:'rank name name proj' 'rank pos team board' 'acts acts acts acts'/);
+  assert.match(html, /\.lab-table thead\{ display:none; \}/);
+  assert.match(html, /data-cell="Actions"/);
+  // compare rail moves above the board so it stays on screen while it scrolls
+  assert.match(html, /\.lab-rail\{ order:-1;/);
+  // the global table{min-width:560px} must not push the page wider than a phone
+  assert.match(html, /\.team-mini-table, \.league-table\{ min-width:0;/);
+  assert.match(html, /\.team-columns > \*, \.team-report-head > \*/);
+  // the empty-queue hint must not be split across the queue grid
+  assert.match(html, /\.rail-queue li\.rail-hint\{ display:block;/);
+});
